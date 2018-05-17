@@ -1,0 +1,25 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "接口文档",
+    "title": "v1接口.",
+    "version": "0.0.1"
+  },
+  "host": "v1.125i.cn",
+  "basePath": "/v1",
+  "paths": {},
+  "responses": {
+    "SUCCESS": {
+      "description": "成功返回 success 字符串"
+    }
+  }
+}

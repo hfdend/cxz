@@ -1,3 +1,18 @@
+// Package main v1接口.
+//
+// 接口文档
+//
+//     Schemes: http
+//     Host: v1.125i.cn
+//     BasePath: /v1
+//     Version: 0.0.1
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+// swagger:meta
 package main
 
 import (
@@ -19,8 +34,11 @@ func main() {
 
 func route(engine *gin.Engine) {
 	{
-		g := engine.Group("v1")
+		g := engine.Group("v1", v1.SetLoginUser)
+
 		g.POST("/register/send", v1.Passport.RegisterSend)
 		g.POST("/register", v1.Passport.Register)
+		g.POST("/login", v1.Passport.Login)
+		g.GET("/user", v1.User.GetUserInfo)
 	}
 }

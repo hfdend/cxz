@@ -3,7 +3,6 @@ package modules
 import (
 	"errors"
 	"fmt"
-
 	"time"
 
 	"github.com/go-redis/redis"
@@ -27,7 +26,7 @@ func (p passport) Register(phone, code, password string) (*models.User, error) {
 	}
 	user := new(models.User)
 	user.Phone = phone
-	user.Password = utils.AesEncode(password)
+	user.Password = utils.EncodePassword(password)
 	if n, err := user.Insert(); err != nil {
 		return nil, err
 	} else if n == 0 {
@@ -53,14 +52,26 @@ func (p passport) SendRegisterCode(phone string) (code string, err error) {
 	return
 }
 
-func (p passport) Login(phone, password string) (*models.Token, error) {
-	user, err := models.UserDefault.GetByPhone(phone)
-	if err != nil {
-		return nil, err
-	} else if user.ID == 0 {
-		return nil, errors.New("该手机号暂未注册")
+func (passport) Login(phone, password string) (token *models.Token, err error) {
+	var user *models.User
+	if user, err = models.UserDefault.GetByPhone(phone); err != nil {
+		return
+	} else if user == nil || user.ID == 0 {
+		err = errors.New("该手机号未注册")
+		return
 	}
-	return nil, nil
+	if utils.EncodePassword(password) != user.Password {
+		err = errors.New("密码错误")
+		return
+	}
+	token = models.NewToken(time.Now().Add(7 * 24 * time.Hour).Local())
+	if err = token.Clean(user.ID); err != nil {
+		return
+	}
+	if err = token.SaveUser(user.ID); err != nil {
+		return
+	}
+	return
 }
 
 func (passport) SaveVerificationCode(phone, code, typ string, expiration time.Duration) error {
