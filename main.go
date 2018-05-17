@@ -11,6 +11,6 @@ import (
 func main() {
 	cli.Init()
 	engine := gin.Default()
-	log.Printf("server run %s%\n", conf.Config.Main.Addr)
+	log.Printf("server run %s\n", conf.Config.Main.Addr)
 	log.Fatalln(engine.Run(conf.Config.Main.Addr))
 }
