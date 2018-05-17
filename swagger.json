@@ -16,7 +16,37 @@
   },
   "host": "v1.125i.cn",
   "basePath": "/v1",
-  "paths": {},
+  "paths": {
+    "/register/send": {
+      "post": {
+        "description": "发送注册验证码",
+        "tags": [
+          "账号"
+        ],
+        "operationId": "Passport_RegisterSend",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "phone": {
+                  "type": "string",
+                  "x-go-name": "Phone"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SUCCESS"
+          }
+        }
+      }
+    }
+  },
   "responses": {
     "SUCCESS": {
       "description": "成功返回 success 字符串"
