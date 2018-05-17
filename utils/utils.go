@@ -2,8 +2,14 @@ package utils
 
 import (
 	"log/syslog"
+	"math/rand"
 	"strings"
+	"time"
 )
+
+func RandInterval(min, max int) int {
+	return rand.New(rand.NewSource(time.Now().UnixNano())).Intn(max-min) + min
+}
 
 func ParseSyslogPriority(s string) syslog.Priority {
 	var priority syslog.Priority
