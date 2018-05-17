@@ -9,23 +9,27 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type model struct {
+// Model 数据库基类
+type Model struct {
 	db *gorm.DB
+	ID int `json:"id" gorm:"primary_key"`
 }
 
-func (m *model) DB() *gorm.DB {
+// DB 获取数据库client
+func (m *Model) DB() *gorm.DB {
 	if m.db == nil {
 		return cli.DB
-	} else {
-		return m.db
 	}
+	return m.db
 }
 
-func (m *model) SetDB(db *gorm.DB) {
+// SetDB set db
+func (m *Model) SetDB(db *gorm.DB) {
 	m.db = db
 }
 
-func BuildOrderId() (string, error) {
+// BuildOrderID 生成一个订单ID
+func BuildOrderID() (string, error) {
 	// 当前时间格式
 	now := time.Now().Format("20060102150405")
 	//  4位随机数
