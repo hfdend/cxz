@@ -24,9 +24,10 @@ func (User) TableName() string {
 }
 
 // Insert Insert
-func (u *User) Insert() error {
+func (u *User) Insert() (int64, error) {
 	u.Created = time.Now().Unix()
-	return u.DB().Create(u).Error
+	u.Updated = time.Now().Unix()
+	return DBInsertIgnore(u.DB(), u)
 }
 
 func (u User) GetByID(id int) (data *User, err error) {

@@ -12,6 +12,8 @@ var once sync.Once
 func Init() {
 	once.Do(func() {
 		conf.Init()
+		InitializeLogger()
 		InitMysql()
+		InitializeRedis()
 	})
 }

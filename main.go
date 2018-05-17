@@ -6,11 +6,21 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hfdend/cxr/cli"
 	"github.com/hfdend/cxr/conf"
+	"github.com/hfdend/cxr/handler/v1"
 )
 
 func main() {
 	cli.Init()
 	engine := gin.Default()
+	route(engine)
 	log.Printf("server run %s\n", conf.Config.Main.Addr)
 	log.Fatalln(engine.Run(conf.Config.Main.Addr))
+}
+
+func route(engine *gin.Engine) {
+	{
+		g := engine.Group("v1")
+		g.POST("/register/send", v1.Passport.RegisterSend)
+		g.POST("/register", v1.Passport.Register)
+	}
 }

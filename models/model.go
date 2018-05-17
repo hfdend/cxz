@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/hfdend/cxr/cli"
@@ -45,4 +46,34 @@ func BuildOrderID() (string, error) {
 	}
 	no := fmt.Sprintf("%s%0.4d%s", now, id, rd)
 	return no, nil
+}
+
+func DBInsertIgnore(dbq *gorm.DB, obj interface{}) (int64, error) {
+	scope := dbq.NewScope(obj)
+	fields := scope.Fields()
+	quoted := make([]string, 0, len(fields))
+	placeholders := make([]string, 0, len(fields))
+	for i := range fields {
+		if fields[i].IsPrimaryKey && fields[i].IsBlank {
+			continue
+		}
+		quoted = append(quoted, scope.Quote(fields[i].DBName))
+		placeholders = append(placeholders, scope.AddToVars(fields[i].Field.Interface()))
+	}
+
+	scope.Raw(fmt.Sprintf("INSERT IGNORE INTO %s (%s) VALUES (%s)",
+		scope.QuotedTableName(),
+		strings.Join(quoted, ", "),
+		strings.Join(placeholders, ", ")))
+
+	result, err := scope.SQLDB().Exec(scope.SQL, scope.SQLVars...)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
