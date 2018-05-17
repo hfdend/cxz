@@ -11,6 +11,18 @@ type passport int
 
 var Passport passport
 
+// swagger:parameters Passport_RegisterSend
+type PassportRegisterSendArgs struct {
+	// in: body
+	Body struct {
+		Phone string `json:"phone"`
+	}
+}
+
+// swagger:route POST /register/send 账号 Passport_RegisterSend
+// 发送注册验证码
+// responses:
+//     200: SUCCESS
 func (passport) RegisterSend(c *gin.Context) {
 	var args struct {
 		Phone string `json:"phone"`

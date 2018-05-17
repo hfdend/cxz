@@ -36,9 +36,9 @@ func route(engine *gin.Engine) {
 	{
 		g := engine.Group("v1", v1.SetLoginUser)
 
-		g.POST("/register/send", v1.Passport.RegisterSend)
-		g.POST("/register", v1.Passport.Register)
-		g.POST("/login", v1.Passport.Login)
-		g.GET("/user", v1.User.GetUserInfo)
+		g.POST("register/send", v1.Passport.RegisterSend)
+		g.POST("register", v1.Passport.Register)
+		g.POST("login", v1.Passport.Login)
+		g.GET("user", v1.User.GetUserInfo)
 	}
 }
