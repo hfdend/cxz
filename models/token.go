@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/google/uuid"
-	"github.com/hfdend/cxr/cli"
+	"github.com/hfdend/cxz/cli"
 )
 
 const (

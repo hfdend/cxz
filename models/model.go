@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hfdend/cxr/cli"
+	"github.com/hfdend/cxz/cli"
 	"github.com/jinzhu/gorm"
 )
 

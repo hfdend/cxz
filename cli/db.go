@@ -11,8 +11,8 @@ import (
 	"unicode"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/hfdend/cxr/conf"
-	"github.com/hfdend/cxr/utils"
+	"github.com/hfdend/cxz/conf"
+	"github.com/hfdend/cxz/utils"
 	"github.com/jinzhu/gorm"
 )
 

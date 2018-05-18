@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"github.com/hfdend/cxr/handler"
+	"github.com/hfdend/cxz/handler"
 )
 
 var JSON = handler.JSON

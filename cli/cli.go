@@ -3,7 +3,7 @@ package cli
 import (
 	"sync"
 
-	"github.com/hfdend/cxr/conf"
+	"github.com/hfdend/cxz/conf"
 )
 
 var once sync.Once

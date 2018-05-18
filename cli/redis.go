@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
-	"github.com/hfdend/cxr/conf"
+	"github.com/hfdend/cxz/conf"
 )
 
 var (

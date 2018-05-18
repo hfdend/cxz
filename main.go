@@ -19,9 +19,9 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hfdend/cxr/cli"
-	"github.com/hfdend/cxr/conf"
-	"github.com/hfdend/cxr/handler/v1"
+	"github.com/hfdend/cxz/cli"
+	"github.com/hfdend/cxz/conf"
+	"github.com/hfdend/cxz/handler/v1"
 )
 
 func main() {

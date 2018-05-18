@@ -1,1 +1,1 @@
-### [接口地址](https://rebilly.github.io/ReDoc/?url=https://raw.githubusercontent.com/hfdend/cxr/master/swagger.json)
+### [接口地址](https://rebilly.github.io/ReDoc/?url=https://raw.githubusercontent.com/hfdend/cxz/master/swagger.json)

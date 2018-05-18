@@ -6,8 +6,8 @@ import (
 	"log/syslog"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/hfdend/cxr/conf"
-	"github.com/hfdend/cxr/utils"
+	"github.com/hfdend/cxz/conf"
+	"github.com/hfdend/cxz/utils"
 )
 
 var (

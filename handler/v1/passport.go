@@ -2,9 +2,9 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hfdend/cxr/errors"
-	"github.com/hfdend/cxr/models"
-	"github.com/hfdend/cxr/modules"
+	"github.com/hfdend/cxz/errors"
+	"github.com/hfdend/cxz/models"
+	"github.com/hfdend/cxz/modules"
 )
 
 type passport int

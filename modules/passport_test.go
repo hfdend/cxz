@@ -1,9 +1,10 @@
 package modules
 
 import (
-	"testing"
-	"github.com/hfdend/cxr/cli"
 	"fmt"
+	"testing"
+
+	"github.com/hfdend/cxz/cli"
 )
 
 func TestPassport_SendRegisterCode(t *testing.T) {

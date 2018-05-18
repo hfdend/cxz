@@ -7,9 +7,9 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
-	"github.com/hfdend/cxr/cli"
-	"github.com/hfdend/cxr/conf"
-	"github.com/hfdend/cxr/errors"
+	"github.com/hfdend/cxz/cli"
+	"github.com/hfdend/cxz/conf"
+	"github.com/hfdend/cxz/errors"
 )
 
 type mp map[string]interface{}

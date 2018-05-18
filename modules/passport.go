@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
-	"github.com/hfdend/cxr/cli"
-	"github.com/hfdend/cxr/models"
-	"github.com/hfdend/cxr/utils"
+	"github.com/hfdend/cxz/cli"
+	"github.com/hfdend/cxz/models"
+	"github.com/hfdend/cxz/utils"
 )
 
 type passport int
