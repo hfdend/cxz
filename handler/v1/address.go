@@ -51,3 +51,48 @@ func (address) Save(c *gin.Context) {
 		JSON(c, address)
 	}
 }
+
+// swagger:parameters Address_Del
+type AddressDelArgs struct {
+	// in: body
+	Body struct {
+		ID int `json:"id"`
+	}
+}
+
+// swagger:route POST /address/del 地址 Address_Del
+// 删除地址
+// responses:
+//     200: SUCCESS
+func (address) Del(c *gin.Context) {
+	var args AddressDelArgs
+	if c.Bind(&args.Body) != nil {
+		return
+	}
+	user := GetUser(c)
+	if err := models.AddressDefault.DelById(user.ID, args.Body.ID); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, SUCCESS)
+	}
+}
+
+// 地址列表
+// swagger:response AddressListResp
+type AddressListResp struct {
+	// in: body
+	Body []*models.Address
+}
+
+// swagger:route GET /address/list 地址 Address_List
+// 获取地址列表
+// responses:
+//     200: AddressListResp
+func (address) List(c *gin.Context) {
+	user := GetUser(c)
+	if list, err := models.AddressDefault.GetList(user.ID); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, list)
+	}
+}

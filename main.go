@@ -44,5 +44,7 @@ func route(engine *gin.Engine) {
 
 		g.GET("district/gradation", v1.District.GetGradation)
 		g.POST("address/save", MustLogin, v1.Address.Save)
+		g.POST("address/del", MustLogin, v1.Address.Del)
+		g.POST("address/list", MustLogin, v1.Address.List)
 	}
 }

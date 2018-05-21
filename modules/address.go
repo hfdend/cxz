@@ -23,6 +23,7 @@ func (address) Save(id, userID int, name, phone, code, detailAddress string) (*m
 	} else {
 		address := new(models.Address)
 		address.IsDefault = models.SureYes
+		address.IsDel = models.SureNo
 	}
 	address.UserID = userID
 	address.Name = name
