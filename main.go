@@ -34,6 +34,7 @@ func main() {
 
 func route(engine *gin.Engine) {
 	{
+		var MustLogin = v1.MustLogin
 		g := engine.Group("v1", v1.SetLoginUser)
 
 		g.POST("register/send", v1.Passport.RegisterSend)
@@ -42,5 +43,6 @@ func route(engine *gin.Engine) {
 		g.GET("user", v1.User.GetUserInfo)
 
 		g.GET("district/gradation", v1.District.GetGradation)
+		g.POST("address/save", MustLogin, v1.Address.Save)
 	}
 }

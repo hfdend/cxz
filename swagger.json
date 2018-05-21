@@ -63,7 +63,21 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/AddressAddResp"
+            "$ref": "#/responses/AddressSaveResp"
+          }
+        }
+      }
+    },
+    "/district/gradation": {
+      "get": {
+        "description": "获取地区数据",
+        "tags": [
+          "地址"
+        ],
+        "operationId": "District_GetGradation",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/DistrictGetGradationResp"
           }
         }
       }
@@ -295,7 +309,7 @@
     }
   },
   "responses": {
-    "AddressAddResp": {
+    "AddressSaveResp": {
       "description": "地址数据",
       "schema": {
         "$ref": "#/definitions/Address"

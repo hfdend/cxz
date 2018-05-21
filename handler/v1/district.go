@@ -16,7 +16,7 @@ type DistrictGetGradationResp struct {
 	Body []*models.District
 }
 
-// swagger:route /district/gradation 地址 District_GetGradation
+// swagger:route GET /district/gradation 地址 District_GetGradation
 // 获取地区数据
 // responses:
 //     200: DistrictGetGradationResp

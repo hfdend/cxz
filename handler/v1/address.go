@@ -11,7 +11,7 @@ type address int
 var Address address
 
 // swagger:parameters Address_Save
-type AddressAddArgs struct {
+type AddressSaveArgs struct {
 	// in: body
 	Body struct {
 		// 有修改，没有新增
@@ -28,8 +28,8 @@ type AddressAddArgs struct {
 }
 
 // 地址数据
-// swagger:response AddressAddResp
-type AddressAddResp struct {
+// swagger:response AddressSaveResp
+type AddressSaveResp struct {
 	// in: body
 	Body *models.Address
 }
@@ -37,9 +37,9 @@ type AddressAddResp struct {
 // swagger:route POST /address/save 地址 Address_Save
 // 保存地址
 // responses:
-//     200: AddressAddResp
+//     200: AddressSaveResp
 func (address) Save(c *gin.Context) {
-	var args AddressAddArgs
+	var args AddressSaveArgs
 	if c.Bind(&args.Body) != nil {
 		return
 	}
