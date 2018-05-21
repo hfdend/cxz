@@ -3,7 +3,7 @@
 // 接口文档
 //
 //     Schemes: http
-//     Host: v1.125i.cn
+//     Host: cxz.125i.cn
 //     BasePath: /v1
 //     Version: 0.0.1
 //     Consumes:
@@ -40,5 +40,7 @@ func route(engine *gin.Engine) {
 		g.POST("register", v1.Passport.Register)
 		g.POST("login", v1.Passport.Login)
 		g.GET("user", v1.User.GetUserInfo)
+
+		g.GET("district/gradation", v1.District.GetGradation)
 	}
 }

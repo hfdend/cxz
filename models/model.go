@@ -10,6 +10,14 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type Sure int
+
+const (
+	SureNil Sure = 0
+	SureYes Sure = 1
+	SureNo  Sure = -1
+)
+
 // Model 数据库基类
 type Model struct {
 	db *gorm.DB

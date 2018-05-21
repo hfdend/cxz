@@ -18,7 +18,6 @@ type UserGetUserInfoResp struct {
 	}
 }
 
-//
 // swagger:route GET /user 用户 User_GetUserInfo
 // 获取登录用户信息
 // responses:

@@ -2,11 +2,14 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"log/syslog"
 	"math"
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin/json"
 )
 
 func RandInterval(min, max int) int {
@@ -53,4 +56,12 @@ func ParseSyslogPriority(s string) syslog.Priority {
 		priority = syslog.LOG_LOCAL7
 	}
 	return priority
+}
+
+func JSON(data interface{}) {
+	bts, err := json.MarshalIndent(data, "", "    ")
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Print(string(bts))
 }

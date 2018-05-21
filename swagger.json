@@ -14,9 +14,60 @@
     "title": "v1接口.",
     "version": "0.0.1"
   },
-  "host": "v1.125i.cn",
+  "host": "cxz.125i.cn",
   "basePath": "/v1",
   "paths": {
+    "/address/save": {
+      "post": {
+        "description": "保存地址",
+        "tags": [
+          "地址"
+        ],
+        "operationId": "Address_Save",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "detail_address": {
+                  "description": "详细地址",
+                  "type": "string",
+                  "x-go-name": "DetailAddress"
+                },
+                "district_code": {
+                  "description": "地区code",
+                  "type": "string",
+                  "x-go-name": "DistrictCode"
+                },
+                "id": {
+                  "description": "有修改，没有新增",
+                  "type": "integer",
+                  "format": "int64",
+                  "x-go-name": "ID"
+                },
+                "name": {
+                  "description": "收货人姓名",
+                  "type": "string",
+                  "x-go-name": "Name"
+                },
+                "phone": {
+                  "description": "收货人电话",
+                  "type": "string",
+                  "x-go-name": "Phone"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/AddressAddResp"
+          }
+        }
+      }
+    },
     "/login": {
       "post": {
         "description": "登录",
@@ -126,7 +177,139 @@
       }
     }
   },
+  "definitions": {
+    "Address": {
+      "description": "用户地址",
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Created"
+        },
+        "detail_address": {
+          "type": "string",
+          "x-go-name": "DetailAddress"
+        },
+        "district_code": {
+          "type": "string",
+          "x-go-name": "DistrictCode"
+        },
+        "district_name": {
+          "type": "string",
+          "x-go-name": "DistrictName"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "is_default": {
+          "$ref": "#/definitions/Sure"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "phone": {
+          "type": "string",
+          "x-go-name": "Phone"
+        },
+        "updated": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Updated"
+        },
+        "user_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UserID"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "District": {
+      "type": "object",
+      "properties": {
+        "area_code": {
+          "type": "string",
+          "x-go-name": "AreaCode"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/District"
+          },
+          "x-go-name": "Children"
+        },
+        "code": {
+          "type": "string",
+          "x-go-name": "Code"
+        },
+        "extra": {
+          "type": "string",
+          "x-go-name": "Extra"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "initial": {
+          "type": "string",
+          "x-go-name": "Initial"
+        },
+        "initials": {
+          "type": "string",
+          "x-go-name": "Initials"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "order": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Order"
+        },
+        "parent_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ParentID"
+        },
+        "pinyin": {
+          "type": "string",
+          "x-go-name": "Pinyin"
+        },
+        "suffix": {
+          "type": "string",
+          "x-go-name": "Suffix"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "Sure": {
+      "type": "integer",
+      "format": "int64",
+      "x-go-package": "github.com/hfdend/cxz/models"
+    }
+  },
   "responses": {
+    "AddressAddResp": {
+      "description": "地址数据",
+      "schema": {
+        "$ref": "#/definitions/Address"
+      }
+    },
+    "DistrictGetGradationResp": {
+      "description": "地区数据",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/District"
+        }
+      }
+    },
     "SUCCESS": {
       "description": "成功返回 success 字符串"
     },
