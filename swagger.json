@@ -17,6 +17,71 @@
   "host": "v1.125i.cn",
   "basePath": "/v1",
   "paths": {
+    "/login": {
+      "post": {
+        "description": "登录",
+        "tags": [
+          "账号"
+        ],
+        "operationId": "Passport_Login",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "Phone",
+            "name": "phone",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "x-go-name": "Password",
+            "name": "password",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SUCCESS"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "description": "账号注册",
+        "tags": [
+          "账号"
+        ],
+        "operationId": "Passport_Register",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "x-go-name": "Code"
+                },
+                "password": {
+                  "type": "string",
+                  "x-go-name": "Password"
+                },
+                "phone": {
+                  "type": "string",
+                  "x-go-name": "Phone"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SUCCESS"
+          }
+        }
+      }
+    },
     "/register/send": {
       "post": {
         "description": "发送注册验证码",
@@ -45,11 +110,52 @@
           }
         }
       }
+    },
+    "/user": {
+      "get": {
+        "description": "获取登录用户信息",
+        "tags": [
+          "用户"
+        ],
+        "operationId": "User_GetUserInfo",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/UserGetUserInfoResp"
+          }
+        }
+      }
     }
   },
   "responses": {
     "SUCCESS": {
       "description": "成功返回 success 字符串"
+    },
+    "UserGetUserInfoResp": {
+      "description": "登录用户信息",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Created"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID"
+          },
+          "phone": {
+            "type": "string",
+            "x-go-name": "Phone"
+          },
+          "updated": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Updated"
+          }
+        }
+      }
     }
   }
 }

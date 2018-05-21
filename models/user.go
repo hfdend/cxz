@@ -11,7 +11,7 @@ import (
 type User struct {
 	Model
 	Phone    string `json:"phone"`
-	Password string `json:"password"`
+	Password string `json:"-"`
 	Created  int64  `json:"created"`
 	Updated  int64  `json:"updated"`
 }

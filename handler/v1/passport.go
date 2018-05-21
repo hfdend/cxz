@@ -37,6 +37,20 @@ func (passport) RegisterSend(c *gin.Context) {
 	}
 }
 
+// swagger:parameters Passport_Register
+type PassportRegisterArgs struct {
+	// in: body
+	Body struct {
+		Phone    string `json:"phone"`
+		Password string `json:"password"`
+		Code     string `json:"code"`
+	}
+}
+
+// swagger:route POST /register 账号 Passport_Register
+// 账号注册
+// responses:
+//     200: SUCCESS
 func (passport) Register(c *gin.Context) {
 	var args struct {
 		Phone    string `json:"phone"`
@@ -53,6 +67,16 @@ func (passport) Register(c *gin.Context) {
 	}
 }
 
+// swagger:parameters Passport_Login
+type PassportLoginArgs struct {
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+}
+
+// swagger:route POST  /login 账号 Passport_Login
+// 登录
+// responses:
+//     200: SUCCESS
 func (passport) Login(c *gin.Context) {
 	var args struct {
 		Phone    string `json:"phone"`
