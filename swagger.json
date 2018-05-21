@@ -17,6 +17,50 @@
   "host": "cxz.125i.cn",
   "basePath": "/v1",
   "paths": {
+    "/address/del": {
+      "post": {
+        "description": "删除地址",
+        "tags": [
+          "地址"
+        ],
+        "operationId": "Address_Del",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "x-go-name": "ID"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SUCCESS"
+          }
+        }
+      }
+    },
+    "/address/list": {
+      "get": {
+        "description": "获取地址列表",
+        "tags": [
+          "地址"
+        ],
+        "operationId": "Address_List",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/AddressListResp"
+          }
+        }
+      }
+    },
     "/address/save": {
       "post": {
         "description": "保存地址",
@@ -221,6 +265,9 @@
         "is_default": {
           "$ref": "#/definitions/Sure"
         },
+        "is_del": {
+          "$ref": "#/definitions/Sure"
+        },
         "name": {
           "type": "string",
           "x-go-name": "Name"
@@ -309,6 +356,15 @@
     }
   },
   "responses": {
+    "AddressListResp": {
+      "description": "地址列表",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Address"
+        }
+      }
+    },
     "AddressSaveResp": {
       "description": "地址数据",
       "schema": {
