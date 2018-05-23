@@ -21,6 +21,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hfdend/cxz/cli"
 	"github.com/hfdend/cxz/conf"
+	"github.com/hfdend/cxz/handler/api"
 	"github.com/hfdend/cxz/handler/v1"
 )
 
@@ -46,5 +47,15 @@ func route(engine *gin.Engine) {
 		g.POST("address/save", MustLogin, v1.Address.Save)
 		g.POST("address/del", MustLogin, v1.Address.Del)
 		g.POST("address/list", MustLogin, v1.Address.List)
+	}
+	{
+		var MustLogin = api.Passport.MustLogin
+		g := engine.Group("api", api.Passport.SetLoginUser)
+		{
+			g.POST("passport/update/password", MustLogin(), api.Passport.UpdatePassword)
+			g.POST("passport/login", api.Passport.Login)
+			g.POST("passport/login/out", MustLogin(), api.Passport.LoginOut)
+			g.GET("passport/user", MustLogin(), api.Passport.GetUser)
+		}
 	}
 }
