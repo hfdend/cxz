@@ -57,5 +57,10 @@ func route(engine *gin.Engine) {
 			g.POST("passport/login/out", MustLogin(), api.Passport.LoginOut)
 			g.GET("passport/user", MustLogin(), api.Passport.GetUser)
 		}
+		{
+			g.GET("attribute/list", MustLogin(), api.Attribute.GetList)
+			g.POST("attribute/items/save", MustLogin(), api.Attribute.SaveItems)
+			g.GET("attribute/items", MustLogin(), api.Attribute.GetItems)
+		}
 	}
 }

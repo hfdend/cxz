@@ -79,7 +79,7 @@ func (passport) UpdatePassword(c *gin.Context) {
 }
 
 func (passport) SetLoginUser(c *gin.Context) {
-	token := c.Request.Header.Get("Token")
+	token := c.Request.Header.Get("token")
 	if token == "" {
 		ck, err := c.Request.Cookie("token")
 		if err == http.ErrNoCookie {
