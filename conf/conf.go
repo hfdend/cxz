@@ -52,6 +52,10 @@ var Config struct {
 			Bucket          string `yaml:"bucket"`
 		} `yaml:"oss"`
 	} `yaml:"aliyun"`
+	MiniProgram struct {
+		AppID  string `json:"appid"`
+		Secret string `json:"secret"`
+	} `json:"miniprogram"`
 }
 
 type FlagParseFn = func(fs *flag.FlagSet)

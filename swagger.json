@@ -154,6 +154,36 @@
         }
       }
     },
+    "/miniprogram/login": {
+      "post": {
+        "description": "通过小程序登录",
+        "tags": [
+          "账号"
+        ],
+        "operationId": "Passport_LoginByJsCode",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "js_code": {
+                  "description": "用户登录凭证",
+                  "type": "string",
+                  "x-go-name": "JSCode"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/PassportLoginByJsCodeResp"
+          }
+        }
+      }
+    },
     "/register": {
       "post": {
         "description": "账号注册",
@@ -353,6 +383,26 @@
       "type": "integer",
       "format": "int64",
       "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "Token": {
+      "description": "Token Token",
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "x-go-name": "AccessToken"
+        },
+        "expiry": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "Expiry"
+        },
+        "refresh_token": {
+          "type": "string",
+          "x-go-name": "RefreshToken"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
     }
   },
   "responses": {
@@ -380,6 +430,11 @@
         }
       }
     },
+    "PassportLoginByJsCodeResp": {
+      "schema": {
+        "$ref": "#/definitions/Token"
+      }
+    },
     "SUCCESS": {
       "description": "成功返回 success 字符串"
     },
@@ -401,6 +456,10 @@
           "phone": {
             "type": "string",
             "x-go-name": "Phone"
+          },
+          "unionid": {
+            "type": "string",
+            "x-go-name": "UnionID"
           },
           "updated": {
             "type": "integer",

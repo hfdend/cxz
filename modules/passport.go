@@ -7,8 +7,10 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/hfdend/cxz/cli"
+	"github.com/hfdend/cxz/conf"
 	"github.com/hfdend/cxz/models"
 	"github.com/hfdend/cxz/utils"
+	"github.com/hfdend/cxz/wx/miniprogram"
 )
 
 type passport int
@@ -63,6 +65,35 @@ func (passport) Login(phone, password string) (token *models.Token, err error) {
 	if utils.EncodePassword(password) != user.Password {
 		err = errors.New("密码错误")
 		return
+	}
+	token = models.NewToken(time.Now().Add(7 * 24 * time.Hour).Local())
+	if err = token.Clean(user.ID); err != nil {
+		return
+	}
+	if err = token.SaveUser(user.ID); err != nil {
+		return
+	}
+	return
+}
+
+func (passport) LoginByJsCode(code string) (token *models.Token, err error) {
+	c := conf.Config.MiniProgram
+	var session miniprogram.Session
+	if session, err = miniprogram.GetSession(c.AppID, c.Secret, code); err != nil {
+		return
+	}
+	var user *models.User
+	if user, err = models.UserDefault.GetByUnionID(session.UnionID); err != nil {
+		return
+	} else if user == nil {
+		user.UnionID = session.UnionID
+		var n int64
+		if n, err = user.Insert(); err != nil {
+			return
+		} else if n == 0 {
+			err = errors.New("unionid repetition")
+			return
+		}
 	}
 	token = models.NewToken(time.Now().Add(7 * 24 * time.Hour).Local())
 	if err = token.Clean(user.ID); err != nil {

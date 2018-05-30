@@ -37,7 +37,7 @@ func route(engine *gin.Engine) {
 	{
 		var MustLogin = v1.MustLogin
 		g := engine.Group("v1", v1.SetLoginUser)
-
+		g.POST("miniprogram/login", v1.Passport.LoginByJsCode)
 		g.POST("register/send", v1.Passport.RegisterSend)
 		g.POST("register", v1.Passport.Register)
 		g.POST("login", v1.Passport.Login)

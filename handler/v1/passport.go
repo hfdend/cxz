@@ -92,6 +92,39 @@ func (passport) Login(c *gin.Context) {
 	}
 }
 
+// swagger:parameters Passport_LoginByJsCode
+type PassportLoginByJsCodeArgs struct {
+	// in: body
+	Body struct {
+		// 用户登录凭证
+		JSCode string `json:"js_code"`
+	}
+}
+
+// swagger:response PassportLoginByJsCodeResp
+type PassportLoginByJsCodeResp struct {
+	// in: body
+	Body models.Token
+}
+
+// swagger:route POST /miniprogram/login 账号 Passport_LoginByJsCode
+// 通过小程序登录
+// responses:
+//     200: PassportLoginByJsCodeResp
+func (passport) LoginByJsCode(c *gin.Context) {
+	var args struct {
+		JSCode string `json:"js_code"`
+	}
+	if c.Bind(&args) != nil {
+		return
+	}
+	if token, err := modules.Passport.LoginByJsCode(args.JSCode); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, token)
+	}
+}
+
 func SetLoginUser(c *gin.Context) {
 	accessToken := c.Request.Header.Get("token")
 	if accessToken == "" {
