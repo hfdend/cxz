@@ -112,6 +112,35 @@
         }
       }
     },
+    "/bind/phone": {
+      "post": {
+        "description": "绑定手机号",
+        "tags": [
+          "账号"
+        ],
+        "operationId": "Passport_BindPhone",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "phone": {
+                  "type": "string",
+                  "x-go-name": "Phone"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SUCCESS"
+          }
+        }
+      }
+    },
     "/district/gradation": {
       "get": {
         "description": "获取地区数据",

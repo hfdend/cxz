@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	"github.com/hfdend/cxz/cli"
 	"github.com/jinzhu/gorm"
 )
 
@@ -51,4 +52,12 @@ func (u User) GetByUnionID(unionID string) (data *User, err error) {
 		err = nil
 	}
 	return
+}
+
+func (User) UpdatePhone(userID int, phone string) error {
+	data := map[string]interface{}{
+		"phone":   phone,
+		"updated": time.Now().Unix(),
+	}
+	return cli.DB.Model(User{}).Where("id = ?", userID).Update(data).Error
 }

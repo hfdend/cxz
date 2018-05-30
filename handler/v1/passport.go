@@ -125,6 +125,33 @@ func (passport) LoginByJsCode(c *gin.Context) {
 	}
 }
 
+// swagger:parameters Passport_BindPhone
+type PassportBindPhoneArgs struct {
+	// in: body
+	Body struct {
+		Phone string `json:"phone"`
+	}
+}
+
+// swagger:route POST /bind/phone 账号 Passport_BindPhone
+// 绑定手机号
+// responses:
+//     200: SUCCESS
+func (passport) BindPhone(c *gin.Context) {
+	var args struct {
+		Phone string `json:"phone"`
+	}
+	if c.Bind(&args) != nil {
+		return
+	}
+	user := GetUser(c)
+	if err := modules.Passport.BindPhone(user.ID, args.Phone); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, SUCCESS)
+	}
+}
+
 func SetLoginUser(c *gin.Context) {
 	accessToken := c.Request.Header.Get("token")
 	if accessToken == "" {

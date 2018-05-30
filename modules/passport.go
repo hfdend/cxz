@@ -109,6 +109,16 @@ func (passport) LoginByJsCode(code string) (token *models.Token, err error) {
 	return
 }
 
+func (passport) BindPhone(userID int, phone string) error {
+	user, err := models.UserDefault.GetByPhone(phone)
+	if err != nil {
+		return err
+	} else if user != nil {
+		return errors.New("手机号已注册")
+	}
+	return models.UserDefault.UpdatePhone(userID, phone)
+}
+
 func (passport) SaveVerificationCode(phone, code, typ string, expiration time.Duration) error {
 	key := fmt.Sprintf("%s%s_%s", KEY_VerificationCode, typ, phone)
 	return cli.Redis.Set(key, code, expiration).Err()
