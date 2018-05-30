@@ -8,6 +8,7 @@ const (
 	Business = 40001
 	System   = 50001
 	NoLogin  = 1007
+	NoPhone  = 1008
 
 	RequestLostTime = 6001
 	RequestExpired  = 6002
