@@ -29,7 +29,13 @@ func (User) TableName() string {
 func (u *User) Insert() (int64, error) {
 	u.Created = time.Now().Unix()
 	u.Updated = time.Now().Unix()
-	return DBInsertIgnore(u.DB(), u)
+
+	id, err := DBInsertIgnore(u.DB(), u)
+	if err != nil {
+		return 0, err
+	}
+	u.ID = int(id)
+	return id, err
 }
 
 func (u User) GetByID(id int) (data *User, err error) {
