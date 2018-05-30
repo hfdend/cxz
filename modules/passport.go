@@ -1,11 +1,13 @@
 package modules
 
 import (
+	"crypto/md5"
 	"errors"
 	"fmt"
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/google/uuid"
 	"github.com/hfdend/cxz/cli"
 	"github.com/hfdend/cxz/conf"
 	"github.com/hfdend/cxz/models"
@@ -87,6 +89,8 @@ func (passport) LoginByJsCode(code string) (token *models.Token, err error) {
 		return
 	} else if user == nil {
 		user.UnionID = session.UnionID
+		// 生成一个唯一临时手机占位号
+		user.Phone = fmt.Sprintf("%x", md5.Sum([]byte(uuid.New().String())))
 		var n int64
 		if n, err = user.Insert(); err != nil {
 			return
