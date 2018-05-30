@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/hfdend/cxz/errors"
 	"github.com/hfdend/cxz/models"
@@ -159,7 +161,7 @@ func (passport) BindPhone(c *gin.Context) {
 func SetLoginUser(c *gin.Context) {
 	accessToken := c.Request.Header.Get("token")
 	if accessToken == "" {
-		if cookie, err := c.Request.Cookie("token"); err != nil {
+		if cookie, err := c.Request.Cookie("token"); err != nil && err != http.ErrNoCookie {
 			JSON(c, err)
 			return
 		} else if cookie != nil {
