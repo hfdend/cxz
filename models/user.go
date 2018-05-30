@@ -48,7 +48,7 @@ func (u User) GetByPhone(phone string) (data *User, err error) {
 
 func (u User) GetByUnionID(unionID string) (data *User, err error) {
 	data = new(User)
-	if err = u.DB().Where("unionid = ?", unionID).Find(data).Error; gorm.IsRecordNotFoundError(err) {
+	if err = u.DB().Where("union_id = ?", unionID).Find(data).Error; gorm.IsRecordNotFoundError(err) {
 		err = nil
 	}
 	return
