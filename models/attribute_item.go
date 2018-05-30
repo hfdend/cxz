@@ -35,3 +35,8 @@ func (AttributeItem) GetByAttributeID(id int) (list []*AttributeItem, err error)
 	err = cli.DB.Where("attribute_id = ?", id).Order("sort asc").Find(&list).Error
 	return
 }
+
+func (AttributeItem) GetAll() (list []*AttributeItem, err error) {
+	err = cli.DB.Find(&list).Error
+	return
+}

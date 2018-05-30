@@ -52,6 +52,9 @@ func route(engine *gin.Engine) {
 		var MustLogin = api.Passport.MustLogin
 		g := engine.Group("api", api.Passport.SetLoginUser)
 		{
+			g.POST("file/upload", MustLogin(), api.File.Upload)
+		}
+		{
 			g.POST("passport/update/password", MustLogin(), api.Passport.UpdatePassword)
 			g.POST("passport/login", api.Passport.Login)
 			g.POST("passport/login/out", MustLogin(), api.Passport.LoginOut)
@@ -59,8 +62,15 @@ func route(engine *gin.Engine) {
 		}
 		{
 			g.GET("attribute/list", MustLogin(), api.Attribute.GetList)
+			g.GET("attribute/list/detail", MustLogin(), api.Attribute.GetAll)
 			g.POST("attribute/items/save", MustLogin(), api.Attribute.SaveItems)
 			g.GET("attribute/items", MustLogin(), api.Attribute.GetItems)
+		}
+		{
+			g.GET("product/list", MustLogin(), api.Product.GetList)
+			g.GET("product/detail", MustLogin(), api.Product.GetByID)
+			g.POST("product/save", MustLogin(), api.Product.Save)
+			g.POST("product/delete", MustLogin(), api.Product.DelByID)
 		}
 	}
 }

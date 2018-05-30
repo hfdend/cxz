@@ -43,6 +43,15 @@ var Config struct {
 		Priority string `yaml:"priority"`
 		PreTag   string `yaml:"pre_tag"`
 	} `yaml:"logger"`
+	Aliyun struct {
+		OSS struct {
+			Domain          string `yaml:"domain"`
+			Endpoint        string `yaml:"endpoint"`
+			AccessKeyID     string `yaml:"access_key_id"`
+			AccessKeySecret string `yaml:"access_key_secret"`
+			Bucket          string `yaml:"bucket"`
+		} `yaml:"oss"`
+	} `yaml:"aliyun"`
 }
 
 type FlagParseFn = func(fs *flag.FlagSet)

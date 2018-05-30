@@ -18,6 +18,15 @@ func (attribute) GetList(c *gin.Context) {
 	}
 }
 
+func (attribute) GetAll(c *gin.Context) {
+	list, err := models.AttributeDefault.GetAll()
+	if err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, list)
+	}
+}
+
 func (attribute) SaveItems(c *gin.Context) {
 	var args struct {
 		ID    int                     `json:"id"`
