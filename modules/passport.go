@@ -87,7 +87,7 @@ func (passport) LoginByJsCode(code string) (token *models.Token, err error) {
 	var user *models.User
 	if user, err = models.UserDefault.GetByUnionID(session.UnionID); err != nil {
 		return
-	} else if user == nil {
+	} else if user == nil || user.ID == 0 {
 		user.UnionID = session.UnionID
 		// 生成一个唯一临时手机占位号
 		user.Phone = fmt.Sprintf("%x", md5.Sum([]byte(uuid.New().String())))
