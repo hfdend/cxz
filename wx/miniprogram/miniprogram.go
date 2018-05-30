@@ -16,7 +16,7 @@ type Session struct {
 
 func GetSession(appID, secret, code string) (session Session, err error) {
 	requestUrl := fmt.Sprintf(
-		"%s?appid=%s&secret=%s&secret=%s&js_code=%s&grant_type=authorization_code",
+		"%s?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
 		"https://api.weixin.qq.com/sns/jscode2session",
 		appID,
 		secret,
