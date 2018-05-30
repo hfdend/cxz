@@ -24,5 +24,10 @@ type UserGetUserInfoResp struct {
 //     200: UserGetUserInfoResp
 func (user) GetUserInfo(c *gin.Context) {
 	user := GetUser(c)
+	if user != nil {
+		if len(user.Phone) == 32 {
+			user.Phone = ""
+		}
+	}
 	JSON(c, user)
 }
