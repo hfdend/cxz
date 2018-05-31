@@ -2,7 +2,6 @@ package modules
 
 import (
 	"crypto/md5"
-	"errors"
 	"fmt"
 	"time"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/hfdend/cxz/cli"
 	"github.com/hfdend/cxz/conf"
+	"github.com/hfdend/cxz/errors"
 	"github.com/hfdend/cxz/models"
 	"github.com/hfdend/cxz/utils"
 	"github.com/hfdend/cxz/wx/miniprogram"
@@ -109,7 +109,8 @@ func (passport) LoginByJsCode(code string) (token *models.Token, err error) {
 	return
 }
 
-func (passport) BindPhone(userID int, phone string) error {
+func (passport) BindPhone(userID int, phone, code string) error {
+	// TODO CODE
 	user, err := models.UserDefault.GetByPhone(phone)
 	if err != nil {
 		return err

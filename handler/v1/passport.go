@@ -132,6 +132,7 @@ type PassportBindPhoneArgs struct {
 	// in: body
 	Body struct {
 		Phone string `json:"phone"`
+		Code  string `json:"code"`
 	}
 }
 
@@ -142,6 +143,7 @@ type PassportBindPhoneArgs struct {
 func (passport) BindPhone(c *gin.Context) {
 	var args struct {
 		Phone string `json:"phone"`
+		Code  string `json:"code"`
 	}
 	if c.Bind(&args) != nil {
 		return
@@ -151,7 +153,7 @@ func (passport) BindPhone(c *gin.Context) {
 		JSON(c, errors.New("请登录", errors.NoLogin))
 		return
 	}
-	if err := modules.Passport.BindPhone(user.ID, args.Phone); err != nil {
+	if err := modules.Passport.BindPhone(user.ID, args.Phone, args.Code); err != nil {
 		JSON(c, err)
 	} else {
 		JSON(c, SUCCESS)

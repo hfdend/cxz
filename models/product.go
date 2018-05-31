@@ -1,9 +1,13 @@
 package models
 
 import (
+	"strings"
 	"time"
 
+	"fmt"
+
 	"github.com/hfdend/cxz/cli"
+	"github.com/hfdend/cxz/conf"
 	"github.com/jinzhu/gorm"
 )
 
@@ -17,7 +21,7 @@ type Product struct {
 	// 商品规格
 	Unit string `json:"unit"`
 	// 售价
-	Price int64 `json:"price"`
+	Price float64 `json:"price"`
 	// 图片
 	Image string `json:"image"`
 	// 备注
@@ -27,6 +31,8 @@ type Product struct {
 	IsDel   Sure   `json:"is_del"`
 	Created int64  `json:"created"`
 	Updated int64  `json:"updated"`
+
+	ImageSrc string `json:"image_src" gorm:"-"`
 }
 
 var ProductDefault Product
@@ -51,6 +57,7 @@ func (Product) GetByID(id int) (*Product, error) {
 		}
 		return nil, err
 	}
+	data.SetImageSrc()
 	return &data, nil
 }
 
@@ -63,6 +70,26 @@ func (Product) DelByID(id int) error {
 }
 
 func (Product) GetList(pager *Pager) (list []*Product, err error) {
-	err = cli.DB.Where("is_del = ?", SureNo).Find(&list).Error
+	db := cli.DB.Model(Product{}).Where("is_del = ?", SureNo)
+	if pager != nil {
+		if db, err = pager.Exec(db); err != nil {
+			return
+		} else if pager.Count == 0 {
+			return
+		}
+	}
+	err = db.Find(&list).Error
+	for _, v := range list {
+		v.SetImageSrc()
+	}
+	return
+}
+
+func (p *Product) SetImageSrc() {
+	if p.Image == "" {
+		return
+	}
+	c := conf.Config.Aliyun.OSS
+	p.ImageSrc = fmt.Sprintf("%s/%s", strings.TrimRight(c.Domain, "/"), strings.TrimLeft(p.Image, "/"))
 	return
 }
