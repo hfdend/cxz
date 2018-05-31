@@ -42,8 +42,8 @@ func route(engine *gin.Engine) {
 		g.POST("register/send", v1.Passport.RegisterSend)
 		g.POST("register", v1.Passport.Register)
 		g.POST("login", v1.Passport.Login)
-		g.GET("user", v1.User.GetUserInfo)
 
+		g.GET("user", MustLogin, v1.User.GetUserInfo)
 		g.GET("district/gradation", v1.District.GetGradation)
 		g.POST("address/save", MustLogin, v1.Address.Save)
 		g.POST("address/del", MustLogin, v1.Address.Del)

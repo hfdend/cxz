@@ -13,7 +13,7 @@ type User struct {
 	Model
 	Phone    string `json:"phone"`
 	Password string `json:"-"`
-	UnionID  string `json:"unionid"`
+	OpenID   string `json:"openid"`
 	Created  int64  `json:"created"`
 	Updated  int64  `json:"updated"`
 }
@@ -52,9 +52,9 @@ func (u User) GetByPhone(phone string) (data *User, err error) {
 	return
 }
 
-func (u User) GetByUnionID(unionID string) (data *User, err error) {
+func (u User) GetByOpenID(unionID string) (data *User, err error) {
 	data = new(User)
-	if err = u.DB().Where("union_id = ?", unionID).Find(data).Error; gorm.IsRecordNotFoundError(err) {
+	if err = u.DB().Where("open_id = ?", unionID).Find(data).Error; gorm.IsRecordNotFoundError(err) {
 		err = nil
 	}
 	return

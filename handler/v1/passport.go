@@ -198,7 +198,7 @@ func GetUser(c *gin.Context) *models.User {
 }
 
 func MustLogin(c *gin.Context) {
-	if user := GetUser(c); user == nil {
+	if user := GetUser(c); user == nil || user.ID == 0 {
 		JSON(c, errors.New("请登录", errors.NoLogin))
 	} else if len(user.Phone) == 32 {
 		JSON(c, errors.New("请绑定手机号", errors.NoPhone))
