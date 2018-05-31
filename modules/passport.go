@@ -114,7 +114,7 @@ func (passport) BindPhone(userID int, phone, code string) error {
 	user, err := models.UserDefault.GetByPhone(phone)
 	if err != nil {
 		return err
-	} else if user != nil {
+	} else if user.ID != 0 {
 		return errors.New("手机号已注册")
 	}
 	return models.UserDefault.UpdatePhone(userID, phone)
