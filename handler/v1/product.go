@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/hfdend/cxz/models"
 	"github.com/hfdend/cxz/modules"
@@ -37,7 +39,7 @@ func (product) GetList(c *gin.Context) {
 	if c.Bind(&args) != nil {
 		return
 	}
-	resp.Body.Pager = models.NewPager(args.Page, 20)
+	fmt.Println(args)
 	if resp.Body.List, err = modules.Product.GetList(args.ProductCondition, resp.Body.Pager); err != nil {
 		JSON(c, err)
 	} else {
