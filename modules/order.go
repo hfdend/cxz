@@ -16,10 +16,20 @@ type OrderProductInfo struct {
 	Number    int `json:"number"`
 }
 
-func (order) Build(userId int, info []OrderProductInfo) (o *models.Order, err error) {
+func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Order, err error) {
+	var address *models.Address
+	if address, err = models.AddressDefault.GetByID(addressID); err != nil {
+		return
+	} else if address == nil {
+		errors.New("请选择收货地址")
+		return
+	} else if address.UserID != userID {
+		errors.New("收货地址错误")
+		return
+	}
 	o = new(models.Order)
-	o.UserId = userId
-	if o.OrderId, err = models.BuildOrderID(); err != nil {
+	o.UserId = userID
+	if o.OrderID, err = models.BuildOrderID(); err != nil {
 		return
 	}
 	o.Status = models.OrderStatusWatting
@@ -36,7 +46,7 @@ func (order) Build(userId int, info []OrderProductInfo) (o *models.Order, err er
 			return
 		}
 		orderProduct := new(models.OrderProduct)
-		orderProduct.OrderId = o.OrderId
+		orderProduct.OrderId = o.OrderID
 		orderProduct.ProductID = product.ID
 		orderProduct.Number = v.Number
 		orderProduct.IPrice = utils.Round(product.Price*float64(v.Number), 2)
@@ -52,6 +62,15 @@ func (order) Build(userId int, info []OrderProductInfo) (o *models.Order, err er
 		o.OrderProducts = append(o.OrderProducts, orderProduct)
 		o.Price += orderProduct.IPrice
 	}
+	o.OrderAddress = new(models.OrderAddress)
+	o.OrderAddress.OrderId = o.OrderID
+	o.OrderAddress.AddressID = address.ID
+	o.OrderAddress.UserID = address.UserID
+	o.OrderAddress.Name = address.Name
+	o.OrderAddress.Phone = address.Phone
+	o.OrderAddress.DistrictCode = address.DistrictCode
+	o.OrderAddress.DistrictName = address.DistrictName
+	o.OrderAddress.DetailAddress = address.DetailAddress
 	db := cli.DB.Begin()
 	defer func() {
 		if err == nil {
@@ -61,6 +80,9 @@ func (order) Build(userId int, info []OrderProductInfo) (o *models.Order, err er
 		}
 	}()
 	if err = o.Insert(db); err != nil {
+		return
+	}
+	if err = o.OrderAddress.Insert(db); err != nil {
 		return
 	}
 	for _, v := range o.OrderProducts {

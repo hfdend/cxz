@@ -25,7 +25,7 @@ const (
 // swagger:model Order
 type Order struct {
 	Model
-	OrderId string `json:"order_id"`
+	OrderID string `json:"order_id"`
 	UserId  int    `json:"user_id"`
 	// 如果是月够的则有值
 	PlanId int     `json:"plan_id"`
@@ -44,6 +44,7 @@ type Order struct {
 	UpdateTime  int64 `json:"update_time"`
 
 	OrderProducts []*OrderProduct `json:"order_products" gorm:"-"`
+	OrderAddress  *OrderAddress   `json:"order_address" gorm:"-"`
 }
 
 var OrderDefault Order
