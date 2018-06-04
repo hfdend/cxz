@@ -45,13 +45,6 @@ func (product) GetList(c *gin.Context) {
 	}
 }
 
-// swagger:parameters Product_AttributeItems
-type ProductAttributeItemsArgs struct {
-	// 1: 获取商品分类选项
-	// 2: 获取口味选项
-	Id int `json:"id" form:"id"`
-}
-
 // 商品分类和属性
 // swagger:response ProductAttributeItemsResp
 type ProductAttributeItemsResp struct {
@@ -63,11 +56,7 @@ type ProductAttributeItemsResp struct {
 // responses:
 //     200: ProductAttributeItemsResp
 func (product) AttributeItems(c *gin.Context) {
-	var args ProductAttributeItemsArgs
-	if c.Bind(&args) != nil {
-		return
-	}
-	list, err := models.AttributeItemDefault.GetByAttributeID(args.Id)
+	list, err := models.AttributeItemDefault.GetAll()
 	if err != nil {
 		JSON(c, err)
 	} else {
