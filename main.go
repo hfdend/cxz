@@ -48,6 +48,8 @@ func route(engine *gin.Engine) {
 		g.POST("address/save", MustLogin, v1.Address.Save)
 		g.POST("address/del", MustLogin, v1.Address.Del)
 		g.POST("address/list", MustLogin, v1.Address.List)
+
+		g.GET("product/list", MustLogin, v1.Product.GetList)
 	}
 	{
 		var MustLogin = api.Passport.MustLogin

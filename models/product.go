@@ -35,6 +35,15 @@ type Product struct {
 	ImageSrc string `json:"image_src" gorm:"-"`
 }
 
+// 商品搜索条件
+// swagger:model ProductCondition
+type ProductCondition struct {
+	// 种类
+	Type string `json:"type" form:"type"`
+	// 口味
+	Taste string `json:"taste" form:"taste"`
+}
+
 var ProductDefault Product
 
 func (Product) TableName() string {
@@ -66,11 +75,17 @@ func (Product) DelByID(id int) error {
 		"is_del":  SureYes,
 		"updated": time.Now().Unix(),
 	}
-	return cli.DB.Where("id = ?", id).Update(data).Error
+	return cli.DB.Model(Product{}).Where("id = ?", id).Update(data).Error
 }
 
-func (Product) GetList(pager *Pager) (list []*Product, err error) {
+func (Product) GetList(cond ProductCondition, pager *Pager) (list []*Product, err error) {
 	db := cli.DB.Model(Product{}).Where("is_del = ?", SureNo)
+	if cond.Type != "" {
+		db = db.Where("type = ?", cond.Type)
+	}
+	if cond.Taste != "" {
+		db = db.Where("taste = ?", cond.Taste)
+	}
 	if pager != nil {
 		if db, err = pager.Exec(db); err != nil {
 			return

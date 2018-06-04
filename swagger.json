@@ -126,6 +126,10 @@
             "schema": {
               "type": "object",
               "properties": {
+                "code": {
+                  "type": "string",
+                  "x-go-name": "Code"
+                },
                 "phone": {
                   "type": "string",
                   "x-go-name": "Phone"
@@ -209,6 +213,43 @@
         "responses": {
           "200": {
             "$ref": "#/responses/PassportLoginByJsCodeResp"
+          }
+        }
+      }
+    },
+    "/product/list": {
+      "get": {
+        "description": "获取商品列表",
+        "tags": [
+          "商品"
+        ],
+        "operationId": "Product_GetList",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "Type",
+            "description": "种类",
+            "name": "type",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "x-go-name": "Taste",
+            "description": "口味",
+            "name": "taste",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Page",
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ProductGetListResp"
           }
         }
       }
@@ -408,6 +449,105 @@
       },
       "x-go-package": "github.com/hfdend/cxz/models"
     },
+    "Pager": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Limit"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Offset"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Page"
+        },
+        "page_count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PageCount"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "Product": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Created"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "image": {
+          "description": "图片",
+          "type": "string",
+          "x-go-name": "Image"
+        },
+        "image_src": {
+          "type": "string",
+          "x-go-name": "ImageSrc"
+        },
+        "intro": {
+          "description": "介绍",
+          "type": "string",
+          "x-go-name": "Intro"
+        },
+        "is_del": {
+          "$ref": "#/definitions/Sure"
+        },
+        "mark": {
+          "description": "备注",
+          "type": "string",
+          "x-go-name": "Mark"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "price": {
+          "description": "售价",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Price"
+        },
+        "taste": {
+          "description": "味道",
+          "type": "string",
+          "x-go-name": "Taste"
+        },
+        "type": {
+          "description": "类型",
+          "type": "string",
+          "x-go-name": "Type"
+        },
+        "unit": {
+          "description": "商品规格",
+          "type": "string",
+          "x-go-name": "Unit"
+        },
+        "updated": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Updated"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
     "Sure": {
       "type": "integer",
       "format": "int64",
@@ -464,6 +604,24 @@
         "$ref": "#/definitions/Token"
       }
     },
+    "ProductGetListResp": {
+      "description": "商品列表",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "Pager": {
+            "$ref": "#/definitions/Pager"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Product"
+            },
+            "x-go-name": "List"
+          }
+        }
+      }
+    },
     "SUCCESS": {
       "description": "成功返回 success 字符串"
     },
@@ -482,13 +640,13 @@
             "format": "int64",
             "x-go-name": "ID"
           },
+          "openid": {
+            "type": "string",
+            "x-go-name": "OpenID"
+          },
           "phone": {
             "type": "string",
             "x-go-name": "Phone"
-          },
-          "unionid": {
-            "type": "string",
-            "x-go-name": "UnionID"
           },
           "updated": {
             "type": "integer",

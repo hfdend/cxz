@@ -13,12 +13,13 @@ var Product product
 func (product) GetList(c *gin.Context) {
 	var args struct {
 		Page int `json:"page" form:"page"`
+		models.ProductCondition
 	}
 	if c.Bind(&args) != nil {
 		return
 	}
 	pager := models.NewPager(args.Page, 20)
-	if list, err := models.ProductDefault.GetList(pager); err != nil {
+	if list, err := models.ProductDefault.GetList(args.ProductCondition, pager); err != nil {
 		JSON(c, err)
 	} else {
 		JSON(c, map[string]interface{}{
