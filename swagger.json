@@ -234,7 +234,7 @@
                 "address_id": {
                   "type": "integer",
                   "format": "int64",
-                  "x-go-name": "AddressId"
+                  "x-go-name": "AddressID"
                 },
                 "product_info": {
                   "type": "array",
@@ -555,9 +555,12 @@
           "type": "string",
           "x-go-name": "Notice"
         },
+        "order_address": {
+          "$ref": "#/definitions/OrderAddress"
+        },
         "order_id": {
           "type": "string",
-          "x-go-name": "OrderId"
+          "x-go-name": "OrderID"
         },
         "order_products": {
           "type": "array",
@@ -605,6 +608,56 @@
       },
       "x-go-package": "github.com/hfdend/cxz/models"
     },
+    "OrderAddress": {
+      "type": "object",
+      "properties": {
+        "address_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "AddressID"
+        },
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Created"
+        },
+        "detail_address": {
+          "type": "string",
+          "x-go-name": "DetailAddress"
+        },
+        "district_code": {
+          "type": "string",
+          "x-go-name": "DistrictCode"
+        },
+        "district_name": {
+          "type": "string",
+          "x-go-name": "DistrictName"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "order_id": {
+          "type": "string",
+          "x-go-name": "OrderId"
+        },
+        "phone": {
+          "type": "string",
+          "x-go-name": "Phone"
+        },
+        "user_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UserID"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
     "OrderProduct": {
       "type": "object",
       "properties": {
@@ -612,12 +665,6 @@
           "type": "integer",
           "format": "int64",
           "x-go-name": "Created"
-        },
-        "i_price": {
-          "description": "此项价格",
-          "type": "number",
-          "format": "double",
-          "x-go-name": "IPrice"
         },
         "id": {
           "type": "integer",
@@ -637,6 +684,12 @@
           "description": "介绍",
           "type": "string",
           "x-go-name": "Intro"
+        },
+        "iprice": {
+          "description": "此项价格",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "IPrice"
         },
         "mark": {
           "description": "备注",
