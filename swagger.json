@@ -217,6 +217,29 @@
         }
       }
     },
+    "/product/attribute/items": {
+      "get": {
+        "tags": [
+          "商品"
+        ],
+        "operationId": "Product_AttributeItems",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Id",
+            "description": "1: 获取商品分类选项\n2: 获取口味选项",
+            "name": "id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ProductAttributeItemsResp"
+          }
+        }
+      }
+    },
     "/product/list": {
       "get": {
         "description": "获取商品列表",
@@ -385,6 +408,36 @@
           "type": "integer",
           "format": "int64",
           "x-go-name": "UserID"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "AttributeItem": {
+      "type": "object",
+      "properties": {
+        "attribute_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "AttributeID"
+        },
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Created"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "sort": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Sort"
         }
       },
       "x-go-package": "github.com/hfdend/cxz/models"
@@ -602,6 +655,15 @@
     "PassportLoginByJsCodeResp": {
       "schema": {
         "$ref": "#/definitions/Token"
+      }
+    },
+    "ProductAttributeItemsResp": {
+      "description": "商品分类和属性",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/AttributeItem"
+        }
       }
     },
     "ProductGetListResp": {
