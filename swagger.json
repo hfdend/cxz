@@ -231,6 +231,11 @@
             "schema": {
               "type": "object",
               "properties": {
+                "address_id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "x-go-name": "AddressId"
+                },
                 "product_info": {
                   "type": "array",
                   "items": {

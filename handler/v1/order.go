@@ -14,6 +14,7 @@ var Order order
 type OrderBuildArgs struct {
 	// in: body
 	Body struct {
+		AddressId   int                        `json:"address_id"`
 		ProductInfo []modules.OrderProductInfo `json:"product_info"`
 	}
 }
