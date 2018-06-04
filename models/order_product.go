@@ -1,14 +1,18 @@
 package models
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
+	"github.com/hfdend/cxz/cli"
+	"github.com/hfdend/cxz/conf"
 	"github.com/jinzhu/gorm"
 )
 
 type OrderProduct struct {
 	Model
-	OrderId string `json:"order_id"`
+	OrderID string `json:"order_id"`
 	// 此项价格
 	IPrice float64 `json:"iprice"`
 	// 商品数量
@@ -45,4 +49,23 @@ func (op *OrderProduct) Insert(db *gorm.DB) error {
 	op.Created = time.Now().Unix()
 	op.Updated = time.Now().Unix()
 	return db.Create(op).Error
+}
+
+func (OrderProduct) GetByOrderID(orderID string) (list []*OrderProduct, err error) {
+	if err = cli.DB.Model(OrderProduct{}).Where("order_id = ?", orderID).Find(&list).Error; err != nil {
+		return
+	}
+	for _, v := range list {
+		v.SetImageSrc()
+	}
+	return
+}
+
+func (p *OrderProduct) SetImageSrc() {
+	if p.Image == "" {
+		return
+	}
+	c := conf.Config.Aliyun.OSS
+	p.ImageSrc = fmt.Sprintf("%s/%s", strings.TrimRight(c.Domain, "/"), strings.TrimLeft(p.Image, "/"))
+	return
 }

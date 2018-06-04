@@ -52,7 +52,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 			return
 		}
 		orderProduct := new(models.OrderProduct)
-		orderProduct.OrderId = o.OrderID
+		orderProduct.OrderID = o.OrderID
 		orderProduct.ProductID = product.ID
 		orderProduct.Number = v.Number
 		orderProduct.IPrice = utils.Round(product.Price*float64(v.Number), 2)
@@ -69,7 +69,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 		o.Price += orderProduct.IPrice
 	}
 	o.OrderAddress = new(models.OrderAddress)
-	o.OrderAddress.OrderId = o.OrderID
+	o.OrderAddress.OrderID = o.OrderID
 	o.OrderAddress.AddressID = address.ID
 	o.OrderAddress.UserID = address.UserID
 	o.OrderAddress.Name = address.Name

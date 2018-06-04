@@ -8,7 +8,7 @@ import (
 
 type OrderAddress struct {
 	Model
-	OrderId       string `json:"order_id"`
+	OrderID       string `json:"order_id"`
 	UserID        int    `json:"user_id"`
 	AddressID     int    `json:"address_id"`
 	Name          string `json:"name"`
