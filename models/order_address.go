@@ -19,6 +19,10 @@ type OrderAddress struct {
 	Created       int64  `json:"created"`
 }
 
+func (OrderAddress) TableName() string {
+	return "order_address"
+}
+
 func (addr *OrderAddress) Insert(db *gorm.DB) error {
 	addr.Created = time.Now().Unix()
 	return db.Create(addr).Error

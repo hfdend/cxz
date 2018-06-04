@@ -10,7 +10,7 @@ type OrderProduct struct {
 	Model
 	OrderId string `json:"order_id"`
 	// 此项价格
-	IPrice float64 `json:"i_price"`
+	IPrice float64 `json:"iprice"`
 	// 商品数量
 	Number int `json:"number"`
 

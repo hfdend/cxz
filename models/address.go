@@ -41,7 +41,7 @@ func (a Address) UpdateNoDefault(userID, defaultID int) error {
 		"is_default": SureNo,
 		"updated":    time.Now().Unix(),
 	}
-	return a.DB().Where("user_id = ? and id != ?", userID, defaultID).Update(data).Error
+	return a.DB().Model(Address{}).Where("user_id = ? and id != ?", userID, defaultID).Update(data).Error
 }
 
 func (a Address) GetByID(id int) (*Address, error) {

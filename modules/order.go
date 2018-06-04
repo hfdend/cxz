@@ -1,6 +1,8 @@
 package modules
 
 import (
+	"time"
+
 	"github.com/hfdend/cxz/cli"
 	"github.com/hfdend/cxz/errors"
 	"github.com/hfdend/cxz/models"
@@ -21,10 +23,10 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 	if address, err = models.AddressDefault.GetByID(addressID); err != nil {
 		return
 	} else if address == nil {
-		errors.New("请选择收货地址")
+		err = errors.New("请选择收货地址")
 		return
 	} else if address.UserID != userID {
-		errors.New("收货地址错误")
+		err = errors.New("收货地址错误")
 		return
 	}
 	o = new(models.Order)
@@ -33,6 +35,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 		return
 	}
 	o.Status = models.OrderStatusWatting
+	o.ExpTime = time.Now().Add(20 * time.Minute).Unix()
 	for _, v := range info {
 		if v.Number <= 0 {
 			err = errors.New("数量错误")
@@ -40,6 +43,9 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 		}
 		var product *models.Product
 		if product, err = models.ProductDefault.GetByID(v.ProductID); err != nil {
+			return
+		} else if product == nil {
+			err = errors.New("未找到商品")
 			return
 		} else if product.Price < 0 {
 			err = errors.New("商品金额错误")

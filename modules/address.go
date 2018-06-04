@@ -21,7 +21,7 @@ func (address) Save(id, userID int, name, phone, code, detailAddress string) (*m
 			return nil, errors.New("地址不存在")
 		}
 	} else {
-		address := new(models.Address)
+		address = new(models.Address)
 		address.IsDefault = models.SureYes
 		address.IsDel = models.SureNo
 	}
