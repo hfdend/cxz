@@ -223,16 +223,6 @@
           "商品"
         ],
         "operationId": "Product_AttributeItems",
-        "parameters": [
-          {
-            "type": "integer",
-            "format": "int64",
-            "x-go-name": "Id",
-            "description": "1: 获取商品分类选项\n2: 获取口味选项",
-            "name": "id",
-            "in": "query"
-          }
-        ],
         "responses": {
           "200": {
             "$ref": "#/responses/ProductAttributeItemsResp"
