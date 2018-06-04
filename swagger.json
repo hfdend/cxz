@@ -217,6 +217,38 @@
         }
       }
     },
+    "/order/build": {
+      "post": {
+        "description": "下单",
+        "tags": [
+          "订单"
+        ],
+        "operationId": "Order_Build",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "product_info": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/OrderProductInfo"
+                  },
+                  "x-go-name": "ProductInfo"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/OrderBuildResp"
+          }
+        }
+      }
+    },
     "/product/attribute/items": {
       "get": {
         "tags": [
@@ -492,6 +524,190 @@
       },
       "x-go-package": "github.com/hfdend/cxz/models"
     },
+    "Order": {
+      "description": "订单",
+      "type": "object",
+      "properties": {
+        "created": {
+          "description": "创建时间",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Created"
+        },
+        "exp_time": {
+          "description": "支付截止时间",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ExpTime"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "notice": {
+          "description": "买家留言",
+          "type": "string",
+          "x-go-name": "Notice"
+        },
+        "order_id": {
+          "type": "string",
+          "x-go-name": "OrderId"
+        },
+        "order_products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderProduct"
+          },
+          "x-go-name": "OrderProducts"
+        },
+        "payment_method": {
+          "description": "支付方式 1: 微信支付",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PaymentMethod"
+        },
+        "payment_time": {
+          "description": "支付时间",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PaymentTime"
+        },
+        "plan_id": {
+          "description": "如果是月够的则有值",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PlanId"
+        },
+        "price": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Price"
+        },
+        "status": {
+          "$ref": "#/definitions/OrderStatus"
+        },
+        "update_time": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UpdateTime"
+        },
+        "user_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UserId"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "OrderProduct": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Created"
+        },
+        "i_price": {
+          "description": "此项价格",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "IPrice"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "image": {
+          "description": "图片",
+          "type": "string",
+          "x-go-name": "Image"
+        },
+        "image_src": {
+          "type": "string",
+          "x-go-name": "ImageSrc"
+        },
+        "intro": {
+          "description": "介绍",
+          "type": "string",
+          "x-go-name": "Intro"
+        },
+        "mark": {
+          "description": "备注",
+          "type": "string",
+          "x-go-name": "Mark"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "number": {
+          "description": "商品数量",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Number"
+        },
+        "order_id": {
+          "type": "string",
+          "x-go-name": "OrderId"
+        },
+        "price": {
+          "description": "售价",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Price"
+        },
+        "product_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ProductID"
+        },
+        "taste": {
+          "description": "味道",
+          "type": "string",
+          "x-go-name": "Taste"
+        },
+        "type": {
+          "description": "类型",
+          "type": "string",
+          "x-go-name": "Type"
+        },
+        "unit": {
+          "description": "商品规格",
+          "type": "string",
+          "x-go-name": "Unit"
+        },
+        "updated": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Updated"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "OrderProductInfo": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Number"
+        },
+        "product_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ProductID"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/modules"
+    },
+    "OrderStatus": {
+      "description": "订单状态\n1: 等待付款\n2: 付款成功\n3: 订单发货中 (月够订单)\n4: 发货完成",
+      "type": "integer",
+      "format": "int64",
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
     "Pager": {
       "type": "object",
       "properties": {
@@ -640,6 +856,12 @@
         "items": {
           "$ref": "#/definitions/District"
         }
+      }
+    },
+    "OrderBuildResp": {
+      "description": "订单详情",
+      "schema": {
+        "$ref": "#/definitions/Order"
       }
     },
     "PassportLoginByJsCodeResp": {
