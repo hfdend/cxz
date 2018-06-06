@@ -23,7 +23,8 @@ type AddressSaveArgs struct {
 		// 地区code
 		DistrictCode string `json:"district_code"`
 		// 详细地址
-		DetailAddress string `json:"detail_address"`
+		DetailAddress string      `json:"detail_address"`
+		IsDefault     models.Sure `json:"is_default"`
 	}
 }
 
@@ -45,7 +46,7 @@ func (address) Save(c *gin.Context) {
 	}
 	body := args.Body
 	user := GetUser(c)
-	if address, err := modules.Address.Save(body.ID, user.ID, body.Name, body.Phone, body.DistrictCode, body.DetailAddress); err != nil {
+	if address, err := modules.Address.Save(body.ID, user.ID, body.Name, body.Phone, body.DistrictCode, body.DetailAddress, body.IsDefault); err != nil {
 		JSON(c, err)
 	} else {
 		JSON(c, address)

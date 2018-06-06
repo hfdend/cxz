@@ -11,7 +11,7 @@ type address int
 
 var Address address
 
-func (address) Save(id, userID int, name, phone, code, detailAddress string) (*models.Address, error) {
+func (address) Save(id, userID int, name, phone, code, detailAddress string, isDefault models.Sure) (*models.Address, error) {
 	var address *models.Address
 	var err error
 	if id != 0 {
@@ -22,9 +22,14 @@ func (address) Save(id, userID int, name, phone, code, detailAddress string) (*m
 		}
 	} else {
 		address = new(models.Address)
-		address.IsDefault = models.SureYes
 		address.IsDel = models.SureNo
 	}
+	switch isDefault {
+	case models.SureNo, models.SureYes:
+	default:
+		return nil, errors.New("是否默认值错误")
+	}
+	address.IsDefault = isDefault
 	address.UserID = userID
 	address.Name = name
 	address.DistrictCode = code

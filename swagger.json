@@ -114,6 +114,9 @@
                   "format": "int64",
                   "x-go-name": "ID"
                 },
+                "is_default": {
+                  "$ref": "#/definitions/Sure"
+                },
                 "name": {
                   "description": "收货人姓名",
                   "type": "string",
