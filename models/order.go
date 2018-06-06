@@ -28,8 +28,13 @@ type Order struct {
 	OrderID string `json:"order_id"`
 	UserId  int    `json:"user_id"`
 	// 如果是月够的则有值
-	PlanId int     `json:"plan_id"`
-	Price  float64 `json:"price"`
+	PlanId int `json:"plan_id"`
+	// 金额
+	Price float64 `json:"price"`
+	// 手续费
+	Fee float64 `json:"fee"`
+	// 支付金额
+	PaymentPrice float64 `json:"payment_price"`
 	// 支付方式 1: 微信支付
 	PaymentMethod int `json:"payment_method"`
 	// 买家留言

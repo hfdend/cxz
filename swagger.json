@@ -571,6 +571,12 @@
           "format": "int64",
           "x-go-name": "ExpTime"
         },
+        "fee": {
+          "description": "手续费",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Fee"
+        },
         "id": {
           "type": "integer",
           "format": "int64",
@@ -601,6 +607,12 @@
           "format": "int64",
           "x-go-name": "PaymentMethod"
         },
+        "payment_price": {
+          "description": "支付金额",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "PaymentPrice"
+        },
         "payment_time": {
           "description": "支付时间",
           "type": "integer",
@@ -614,6 +626,7 @@
           "x-go-name": "PlanId"
         },
         "price": {
+          "description": "金额",
           "type": "number",
           "format": "double",
           "x-go-name": "Price"

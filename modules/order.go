@@ -68,6 +68,8 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 		o.OrderProducts = append(o.OrderProducts, orderProduct)
 		o.Price += orderProduct.IPrice
 	}
+	o.Fee = 0
+	o.PaymentPrice = o.Price + o.Fee
 	o.OrderAddress = new(models.OrderAddress)
 	o.OrderAddress.OrderID = o.OrderID
 	o.OrderAddress.AddressID = address.ID
