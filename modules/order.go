@@ -116,6 +116,7 @@ func (order) GetByID(orderID string, userID int) (o *models.Order, err error) {
 	return
 }
 
-func (order) GetList() (list []*models.Order, err error) {
+func (order) GetList(cond models.OrderCondition, pager *models.Pager) (list []*models.Order, err error) {
+	list, err = models.OrderDefault.GetList(cond, pager)
 	return
 }
