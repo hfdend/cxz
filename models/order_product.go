@@ -61,11 +61,11 @@ func (OrderProduct) GetByOrderID(orderID string) (list []*OrderProduct, err erro
 	return
 }
 
-func (p *OrderProduct) SetImageSrc() {
-	if p.Image == "" {
+func (op *OrderProduct) SetImageSrc() {
+	if op.Image == "" {
 		return
 	}
 	c := conf.Config.Aliyun.OSS
-	p.ImageSrc = fmt.Sprintf("%s/%s", strings.TrimRight(c.Domain, "/"), strings.TrimLeft(p.Image, "/"))
+	op.ImageSrc = fmt.Sprintf("%s/%s", strings.TrimRight(c.Domain, "/"), strings.TrimLeft(p.Image, "/"))
 	return
 }
