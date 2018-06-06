@@ -54,6 +54,16 @@ func (a Address) GetByID(id int) (*Address, error) {
 	return &data, nil
 }
 
+func (a Address) GetByIDAndUserID(id, userID int) (*Address, error) {
+	var data Address
+	if err := a.DB().Where("id = ? and user_id = ? and is_del = ?", id, userID, SureNo).Find(&data).Error; err == gorm.ErrRecordNotFound {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
 func (a Address) DelById(userID, id int) error {
 	data := map[string]interface{}{
 		"is_del":  SureYes,

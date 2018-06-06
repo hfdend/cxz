@@ -47,6 +47,29 @@
         }
       }
     },
+    "/address/detail": {
+      "get": {
+        "description": "获取地址列表",
+        "tags": [
+          "地址"
+        ],
+        "operationId": "Address_GetByID",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID",
+            "name": "id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/AddressGetByIDResp"
+          }
+        }
+      }
+    },
     "/address/list": {
       "get": {
         "description": "获取地址列表",
@@ -644,7 +667,7 @@
         },
         "order_id": {
           "type": "string",
-          "x-go-name": "OrderId"
+          "x-go-name": "OrderID"
         },
         "phone": {
           "type": "string",
@@ -708,7 +731,7 @@
         },
         "order_id": {
           "type": "string",
-          "x-go-name": "OrderId"
+          "x-go-name": "OrderID"
         },
         "price": {
           "description": "售价",
@@ -892,6 +915,12 @@
     }
   },
   "responses": {
+    "AddressGetByIDResp": {
+      "description": "地址详情",
+      "schema": {
+        "$ref": "#/definitions/Address"
+      }
+    },
     "AddressListResp": {
       "description": "地址列表",
       "schema": {

@@ -48,6 +48,7 @@ func route(engine *gin.Engine) {
 		g.POST("address/save", MustLogin, v1.Address.Save)
 		g.POST("address/del", MustLogin, v1.Address.Del)
 		g.GET("address/list", MustLogin, v1.Address.List)
+		g.GET("address/detail", MustLogin, v1.Address.GetByID)
 
 		g.GET("product/attribute/items", MustLogin, v1.Product.AttributeItems)
 		g.GET("product/list", MustLogin, v1.Product.GetList)

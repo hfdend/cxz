@@ -96,3 +96,32 @@ func (address) List(c *gin.Context) {
 		JSON(c, list)
 	}
 }
+
+// swagger:parameters Address_GetByID
+type AddressGetByIDArgs struct {
+	ID int `json:"id" form:"id"`
+}
+
+// 地址详情
+// swagger:response AddressGetByIDResp
+type AddressGetByIDResp struct {
+	// in: body
+	Body *models.Address
+}
+
+// swagger:route GET /address/detail 地址 Address_GetByID
+// 获取地址列表
+// responses:
+//     200: AddressGetByIDResp
+func (address) GetByID(c *gin.Context) {
+	var args AddressGetByIDArgs
+	if c.Bind(&args) != nil {
+		return
+	}
+	user := GetUser(c)
+	if addr, err := models.AddressDefault.GetByIDAndUserID(args.ID, user.ID); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, addr)
+	}
+}
