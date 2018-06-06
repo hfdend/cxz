@@ -43,3 +43,33 @@ func (order) Build(c *gin.Context) {
 		JSON(c, order)
 	}
 }
+
+// swagger:parameters Order_GetByOrderID
+type OrderGetByOrderIDArgs struct {
+	OrderID string `json:"order_id" form:"order_id"`
+}
+
+// 订单详情
+// swagger:model OrderGetByOrderIDResp
+type OrderGetByOrderIDResp struct {
+	// in: body
+	Body *models.Order
+}
+
+// swagger:route GET /order/detail 订单 Order_GetByOrderID
+// 订单详情
+// responses:
+//     200: OrderGetByOrderIDResp
+func (order) GetByOrderID(c *gin.Context) {
+	var args OrderGetByOrderIDArgs
+	if c.Bind(&args) != nil {
+		return
+	}
+	user := GetUser(c)
+	order, err := modules.Order.GetByID(args.OrderID, user.ID)
+	if err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, order)
+	}
+}

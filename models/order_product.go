@@ -45,6 +45,8 @@ func (OrderProduct) TableName() string {
 	return "order_product"
 }
 
+var OrderProductDefault OrderProduct
+
 func (op *OrderProduct) Insert(db *gorm.DB) error {
 	op.Created = time.Now().Unix()
 	op.Updated = time.Now().Unix()

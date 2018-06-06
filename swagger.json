@@ -280,6 +280,28 @@
         }
       }
     },
+    "/order/detail": {
+      "get": {
+        "description": "订单详情",
+        "tags": [
+          "订单"
+        ],
+        "operationId": "Order_GetByOrderID",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "OrderID",
+            "name": "order_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/OrderGetByOrderIDResp"
+          }
+        }
+      }
+    },
     "/product/attribute/items": {
       "get": {
         "tags": [

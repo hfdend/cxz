@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	"github.com/hfdend/cxz/cli"
 	"github.com/jinzhu/gorm"
 )
 
@@ -19,6 +20,8 @@ type OrderAddress struct {
 	Created       int64  `json:"created"`
 }
 
+var OrderAddressDefault OrderAddress
+
 func (OrderAddress) TableName() string {
 	return "order_address"
 }
@@ -26,4 +29,15 @@ func (OrderAddress) TableName() string {
 func (addr *OrderAddress) Insert(db *gorm.DB) error {
 	addr.Created = time.Now().Unix()
 	return db.Create(addr).Error
+}
+
+func (OrderAddress) GetByOrderID(orderID string) (*OrderAddress, error) {
+	var data OrderAddress
+	if err := cli.DB.Where("order_id = ?", orderID).Find(&data).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &data, nil
 }

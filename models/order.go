@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	"github.com/hfdend/cxz/cli"
 	"github.com/jinzhu/gorm"
 )
 
@@ -15,7 +16,7 @@ import (
 type OrderStatus int
 
 const (
-	OrderStatusWatting OrderStatus = iota + 1
+	OrderStatusWaitting OrderStatus = iota + 1
 	OrderStatusSuccess
 	OrderStatusDelivering
 	OrderStatusDeliveried
@@ -62,4 +63,26 @@ func (o *Order) Insert(db *gorm.DB) error {
 	o.Created = time.Now().Unix()
 	o.UpdateTime = time.Now().Unix()
 	return db.Create(o).Error
+}
+
+func (*Order) GetByOrderID(orderID string) (*Order, error) {
+	var data Order
+	if err := cli.DB.Where("order_id = ?", orderID).Find(&data).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (*Order) GetByOrderIDAndUserID(orderID string, userID int) (*Order, error) {
+	var data Order
+	if err := cli.DB.Where("order_id = ? and user_id = ?", orderID, userID).Find(&data).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &data, nil
 }

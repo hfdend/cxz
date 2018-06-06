@@ -34,7 +34,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 	if o.OrderID, err = models.BuildOrderID(); err != nil {
 		return
 	}
-	o.Status = models.OrderStatusWatting
+	o.Status = models.OrderStatusWaitting
 	o.ExpTime = time.Now().Add(20 * time.Minute).Unix()
 	for _, v := range info {
 		if v.Number <= 0 {
@@ -97,6 +97,21 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 		if err = v.Insert(db); err != nil {
 			return
 		}
+	}
+	return
+}
+
+func (order) GetByID(orderID string, userID int) (o *models.Order, err error) {
+	if o, err = models.OrderDefault.GetByOrderIDAndUserID(orderID, userID); err != nil {
+		return
+	} else if o == nil {
+		return
+	}
+	if o.OrderAddress, err = models.OrderAddressDefault.GetByOrderID(o.OrderID); err != nil {
+		return
+	}
+	if o.OrderProducts, err = models.OrderProductDefault.GetByOrderID(o.OrderID); err != nil {
+		return
 	}
 	return
 }
