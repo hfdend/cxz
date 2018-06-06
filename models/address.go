@@ -73,6 +73,6 @@ func (a Address) DelById(userID, id int) error {
 }
 
 func (a Address) GetList(userID int) (list []*Address, err error) {
-	err = a.DB().Where("user_id = ?", userID).Find(&list).Error
+	err = a.DB().Where("user_id = ? and is_del = ?", userID, SureNo).Find(&list).Error
 	return
 }

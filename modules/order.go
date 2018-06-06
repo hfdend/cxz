@@ -30,7 +30,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 		return
 	}
 	o = new(models.Order)
-	o.UserId = userID
+	o.UserID = userID
 	if o.OrderID, err = models.BuildOrderID(); err != nil {
 		return
 	}
@@ -113,5 +113,9 @@ func (order) GetByID(orderID string, userID int) (o *models.Order, err error) {
 	if o.OrderProducts, err = models.OrderProductDefault.GetByOrderID(o.OrderID); err != nil {
 		return
 	}
+	return
+}
+
+func (order) GetList() (list []*models.Order, err error) {
 	return
 }

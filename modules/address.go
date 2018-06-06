@@ -33,6 +33,7 @@ func (address) Save(id, userID int, name, phone, code, detailAddress string, isD
 	address.UserID = userID
 	address.Name = name
 	address.DistrictCode = code
+	address.Phone = phone
 	districtName, err := models.DistrictDefault.GetNames(code)
 	if err != nil {
 		return nil, err

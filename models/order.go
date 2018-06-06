@@ -27,9 +27,9 @@ const (
 type Order struct {
 	Model
 	OrderID string `json:"order_id"`
-	UserId  int    `json:"user_id"`
+	UserID  int    `json:"user_id"`
 	// 如果是月够的则有值
-	PlanId int `json:"plan_id"`
+	PlanID int `json:"plan_id"`
 	// 金额
 	Price float64 `json:"price"`
 	// 手续费
@@ -51,6 +51,14 @@ type Order struct {
 
 	OrderProducts []*OrderProduct `json:"order_products" gorm:"-"`
 	OrderAddress  *OrderAddress   `json:"order_address" gorm:"-"`
+}
+
+type OrderCondition struct {
+	UserID    string      `json:"user_id" form:"user_id"`
+	OrderID   string      `json:"order_id" form:"order_id"`
+	StartTime int64       `json:"start_time" form:"start_time"`
+	EndTime   int64       `json:"end_time" form:"end_time"`
+	Status    OrderStatus `json:"status" form:"status"`
 }
 
 var OrderDefault Order
@@ -76,7 +84,7 @@ func (*Order) GetByOrderID(orderID string) (*Order, error) {
 	return &data, nil
 }
 
-func (*Order) GetByOrderIDAndUserID(orderID string, userID int) (*Order, error) {
+func (Order) GetByOrderIDAndUserID(orderID string, userID int) (*Order, error) {
 	var data Order
 	if err := cli.DB.Where("order_id = ? and user_id = ?", orderID, userID).Find(&data).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -85,4 +93,36 @@ func (*Order) GetByOrderIDAndUserID(orderID string, userID int) (*Order, error) 
 		return nil, err
 	}
 	return &data, nil
+}
+
+func (Order) GetList(cond OrderCondition, pager *Pager) (list []*Order, err error) {
+	db := cli.DB.Model(Order{})
+	if cond.OrderID != "" {
+		db = db.Where("order_id = ?", cond.OrderID)
+	}
+	if cond.UserID != "" {
+		db = db.Where("user_id = ?", cond.UserID)
+	}
+	if cond.StartTime != 0 {
+		db = db.Where("created >= ?", cond.StartTime)
+	}
+	if cond.EndTime != 0 {
+		db = db.Where("created < ?", cond.EndTime)
+	}
+	if cond.Status != 0 {
+		db = db.Where("status = ?", cond.Status)
+	}
+	db = db.Where("exp_time > ?", time.Now())
+	if pager != nil {
+		if db, err = pager.Exec(db); err != nil {
+			return
+		}
+		if pager.Count == 0 {
+			return
+		}
+	}
+	if err = db.Order("id desc").Find(&list).Error; err != nil {
+		return
+	}
+	return
 }
