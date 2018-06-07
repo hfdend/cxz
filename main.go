@@ -83,5 +83,8 @@ func route(engine *gin.Engine) {
 			g.POST("product/save", MustLogin(), api.Product.Save)
 			g.POST("product/delete", MustLogin(), api.Product.DelByID)
 		}
+		{
+			g.POST("order/list", MustLogin(), api.Order.GetList)
+		}
 	}
 }
