@@ -55,6 +55,7 @@ func route(engine *gin.Engine) {
 
 		g.POST("order/build", MustLogin, v1.Order.Build)
 		g.POST("order/detail", MustLogin, v1.Order.GetByOrderID)
+		g.POST("order/list", MustLogin, v1.Order.GetList)
 	}
 	{
 		var MustLogin = api.Passport.MustLogin

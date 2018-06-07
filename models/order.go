@@ -54,7 +54,7 @@ type Order struct {
 }
 
 type OrderCondition struct {
-	UserID    string      `json:"user_id" form:"user_id"`
+	UserID    int         `json:"user_id" form:"user_id"`
 	OrderID   string      `json:"order_id" form:"order_id"`
 	StartTime int64       `json:"start_time" form:"start_time"`
 	EndTime   int64       `json:"end_time" form:"end_time"`
@@ -100,7 +100,7 @@ func (Order) GetList(cond OrderCondition, pager *Pager) (list []*Order, err erro
 	if cond.OrderID != "" {
 		db = db.Where("order_id = ?", cond.OrderID)
 	}
-	if cond.UserID != "" {
+	if cond.UserID != 0 {
 		db = db.Where("user_id = ?", cond.UserID)
 	}
 	if cond.StartTime != 0 {

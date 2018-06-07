@@ -73,3 +73,40 @@ func (order) GetByOrderID(c *gin.Context) {
 		JSON(c, order)
 	}
 }
+
+// swagger:parameters Order_GetList
+type OrderGetListArgs struct {
+	Page int `json:"page" form:"page"`
+}
+
+// 订单列表
+// swagger:response OrderGetListResp
+type OrderGetListResp struct {
+	// in: body
+	Body struct {
+		List  []*models.Order `json:"list"`
+		Pager *models.Pager   `json:"pager"`
+	}
+}
+
+// swagger:route GET /order/list 订单 Order_GetList
+// 订单列表
+// responses:
+//     200: OrderGetListResp
+func (order) GetList(c *gin.Context) {
+	var args OrderGetListArgs
+	var resp OrderGetListResp
+	var err error
+	if c.Bind(&args) != nil {
+		return
+	}
+	user := GetUser(c)
+	cond := models.OrderCondition{}
+	cond.UserID = user.ID
+	resp.Body.Pager = models.NewPager(args.Page, 20)
+	if resp.Body.List, err = modules.Order.GetListDetail(cond, resp.Body.Pager); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, resp.Body)
+	}
+}
