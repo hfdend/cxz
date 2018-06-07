@@ -335,6 +335,35 @@
         }
       }
     },
+    "/order/products/freight": {
+      "get": {
+        "description": "获取商品运费",
+        "operationId": "Order_GetFreight",
+        "parameters": [
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/OrderProductInfo"
+            },
+            "x-go-name": "ProductInfo",
+            "name": "product_info",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "WeekNumber",
+            "name": "week_number",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/OrderGetFreightResp"
+          }
+        }
+      }
+    },
     "/product/attribute/items": {
       "get": {
         "tags": [
@@ -1026,6 +1055,20 @@
       "description": "订单详情",
       "schema": {
         "$ref": "#/definitions/Order"
+      }
+    },
+    "OrderGetFreightResp": {
+      "description": "运费",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "freight": {
+            "description": "运费",
+            "type": "number",
+            "format": "double",
+            "x-go-name": "Freight"
+          }
+        }
       }
     },
     "OrderGetListResp": {
