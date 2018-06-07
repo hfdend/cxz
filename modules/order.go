@@ -69,6 +69,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 		o.OrderProducts = append(o.OrderProducts, orderProduct)
 		o.Price += orderProduct.IPrice
 	}
+	o.Notice = notice
 	o.Freight = 0
 	o.PaymentPrice = o.Price + o.Freight
 	o.OrderAddress = new(models.OrderAddress)
