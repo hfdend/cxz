@@ -10,6 +10,36 @@ type order int
 
 var Order order
 
+// swagger:parameters Order_GetFreight
+type OrderGetFreightArgs struct {
+	ProductInfo []modules.OrderProductInfo `json:"product_info"`
+	WeekNumber  int                        `json:"week_number"`
+}
+
+// 运费
+// swagger:response OrderGetFreightResp
+type OrderGetFreightResp struct {
+	// in: body
+	Body struct {
+		// 运费
+		Freight float64 `json:"freight"`
+	}
+}
+
+// swagger:route GET /order/products/freight Order_GetFreight
+// 获取商品运费
+// responses:
+//    200: OrderGetFreightResp
+func (order) GetFreight(c *gin.Context) {
+	var args OrderGetFreightArgs
+	var resp OrderGetFreightResp
+	if c.Bind(args) != nil {
+		return
+	}
+	resp.Body.Freight = 0
+	JSON(c, resp.Body)
+}
+
 // swagger:parameters Order_Build
 type OrderBuildArgs struct {
 	// in: body
