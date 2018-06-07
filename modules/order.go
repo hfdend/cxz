@@ -222,3 +222,8 @@ func (order) WXAPay(orderID string, user *models.User, ip string) (wxaRequest *w
 	wxaRequest.SetSign(api.Config.AppId, api.Config.Key)
 	return
 }
+
+func (order) PaymentSuccess(orderID, transactionID string) error {
+	//order, err := models.OrderDefault.GetByOrderID(orderID)
+	return nil
+}

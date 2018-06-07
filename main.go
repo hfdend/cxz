@@ -21,6 +21,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hfdend/cxz/cli"
 	"github.com/hfdend/cxz/conf"
+	"github.com/hfdend/cxz/handler"
 	"github.com/hfdend/cxz/handler/api"
 	"github.com/hfdend/cxz/handler/v1"
 )
@@ -34,6 +35,7 @@ func main() {
 }
 
 func route(engine *gin.Engine) {
+	engine.POST("wxpayment/notify", handler.WXAPaymentNotify)
 	{
 		var MustLogin = v1.MustLogin
 		g := engine.Group("v1", v1.SetLoginUser)
@@ -55,7 +57,7 @@ func route(engine *gin.Engine) {
 
 		g.POST("order/products/freight", MustLogin, v1.Order.GetFreight)
 		g.POST("order/build", MustLogin, v1.Order.Build)
-		g.POST("order/detail", MustLogin, v1.Order.GetByOrderID)
+		g.GET("order/detail", MustLogin, v1.Order.GetByOrderID)
 		g.POST("order/list", MustLogin, v1.Order.GetList)
 		g.POST("order/wxapayment", MustLogin, v1.Order.WXAPayment)
 	}
