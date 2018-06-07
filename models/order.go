@@ -16,7 +16,7 @@ import (
 type OrderStatus int
 
 const (
-	OrderStatusWaitting OrderStatus = iota + 1
+	OrderStatusWaiting OrderStatus = iota + 1
 	OrderStatusSuccess
 	OrderStatusDelivering
 	OrderStatusDeliveried
@@ -85,6 +85,17 @@ func (*Order) GetByOrderID(orderID string) (*Order, error) {
 	return &data, nil
 }
 
+func (*Order) GetByOrderIDForUpdate(db *gorm.DB, orderID string) (*Order, error) {
+	var data Order
+	if err := db.Set("gorm:query_option", "FOR UPDATE").Where("order_id = ?", orderID).Find(&data).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &data, nil
+}
+
 func (Order) GetByOrderIDAndUserID(orderID string, userID int) (*Order, error) {
 	var data Order
 	if err := cli.DB.Where("order_id = ? and user_id = ?", orderID, userID).Find(&data).Error; err != nil {
@@ -126,4 +137,16 @@ func (Order) GetList(cond OrderCondition, pager *Pager) (list []*Order, err erro
 		return
 	}
 	return
+}
+
+func (o *Order) ToSuccess(db *gorm.DB, transactionID string) error {
+	data := map[string]interface{}{
+		"status":         OrderStatusSuccess,
+		"exp_time":       0,
+		"payment_time":   time.Now().Unix(),
+		"update_time":    time.Now().Unix(),
+		"transaction_id": transactionID,
+		"payment_method": 1,
+	}
+	return db.Model(o).Update(data).Error
 }

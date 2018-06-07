@@ -61,7 +61,11 @@ func WXAPaymentNotify(c *gin.Context) {
 		return
 	}
 	// 更改订单到支付成功
-	modules.Order.PaymentSuccess(orderID, transactionID)
+	if err := modules.Order.PaymentSuccess(orderID, transactionID); err != nil {
+		wxNotifyReturn(c, err)
+		return
+	}
+	wxNotifyReturn(c, "success")
 }
 
 func wxNotifyReturn(c *gin.Context, data interface{}) {

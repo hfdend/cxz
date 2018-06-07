@@ -40,7 +40,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 	if o.OrderID, err = models.BuildOrderID(); err != nil {
 		return
 	}
-	o.Status = models.OrderStatusWaitting
+	o.Status = models.OrderStatusWaiting
 	o.ExpTime = time.Now().Add(20 * time.Minute).Unix()
 	var body string
 	for _, v := range info {
@@ -224,6 +224,19 @@ func (order) WXAPay(orderID string, user *models.User, ip string) (wxaRequest *w
 }
 
 func (order) PaymentSuccess(orderID, transactionID string) error {
-	//order, err := models.OrderDefault.GetByOrderID(orderID)
+	db := cli.DB.Begin()
+	order, err := models.OrderDefault.GetByOrderIDForUpdate(db, orderID)
+	if err != nil {
+		db.Rollback()
+		return err
+	} else if order == nil || order.Status != models.OrderStatusWaiting {
+		db.Rollback()
+		return nil
+	}
+	if err := order.ToSuccess(db, transactionID); err != nil {
+		db.Rollback()
+		return err
+	}
+	db.Commit()
 	return nil
 }
