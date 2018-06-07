@@ -302,6 +302,29 @@
         }
       }
     },
+    "/order/list": {
+      "get": {
+        "description": "订单列表",
+        "tags": [
+          "订单"
+        ],
+        "operationId": "Order_GetList",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Page",
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/OrderGetListResp"
+          }
+        }
+      }
+    },
     "/product/attribute/items": {
       "get": {
         "tags": [
@@ -645,7 +668,7 @@
           "description": "如果是月够的则有值",
           "type": "integer",
           "format": "int64",
-          "x-go-name": "PlanId"
+          "x-go-name": "PlanID"
         },
         "price": {
           "description": "金额",
@@ -664,7 +687,7 @@
         "user_id": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "UserId"
+          "x-go-name": "UserID"
         }
       },
       "x-go-package": "github.com/hfdend/cxz/models"
@@ -987,6 +1010,24 @@
       "description": "订单详情",
       "schema": {
         "$ref": "#/definitions/Order"
+      }
+    },
+    "OrderGetListResp": {
+      "description": "订单列表",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Order"
+            },
+            "x-go-name": "List"
+          },
+          "pager": {
+            "$ref": "#/definitions/Pager"
+          }
+        }
       }
     },
     "PassportLoginByJsCodeResp": {
