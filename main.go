@@ -53,7 +53,7 @@ func route(engine *gin.Engine) {
 		g.GET("product/attribute/items", MustLogin, v1.Product.AttributeItems)
 		g.GET("product/list", MustLogin, v1.Product.GetList)
 
-		g.GET("order/products/freight", MustLogin, v1.Order.GetFreight)
+		g.POST("order/products/freight", MustLogin, v1.Order.GetFreight)
 		g.POST("order/build", MustLogin, v1.Order.Build)
 		g.POST("order/detail", MustLogin, v1.Order.GetByOrderID)
 		g.POST("order/list", MustLogin, v1.Order.GetList)

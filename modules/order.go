@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/hfdend/cxz/cli"
@@ -162,9 +163,9 @@ func (order) GetListDetail(cond models.OrderCondition, pager *models.Pager) (lis
 }
 
 // 小程序支付
-func (order) WXAPay(orderID string, userID int) (wxaRequest *wxpay.PayWxaRequest, err error) {
+func (order) WXAPay(orderID string, user *models.User, ip string) (wxaRequest *wxpay.PayWxaRequest, err error) {
 	var order *models.Order
-	if order, err = models.OrderDefault.GetByOrderIDAndUserID(orderID, userID); err != nil {
+	if order, err = models.OrderDefault.GetByOrderIDAndUserID(orderID, user.ID); err != nil {
 		return
 	} else if order == nil {
 		err = errors.New("订单不存在")
@@ -175,6 +176,31 @@ func (order) WXAPay(orderID string, userID int) (wxaRequest *wxpay.PayWxaRequest
 	c.MchId = "1505266461"
 	c.AppSecret = "3f31b9cc1a9721851a3c63cec1cb3de1"
 	api := wxpay.NewApi(c)
-	_ = api
+
+	query := wxpay.NewPayUnifiedOrder()
+	query.SetBody("订单商品")
+	query.SetOutTradeNo(order.OrderID)
+	query.SetTotalFee(int(utils.Round(order.PaymentPrice*100, 0)))
+	query.SetOpenId(user.OpenID)
+	query.SetTradeType("JSAPI")
+	query.SetSpbillCreateIp(ip)
+	var result *wxpay.PayResults
+	if result, err = api.UnifiedOrder(query, 5*time.Second); err != nil {
+		return
+	}
+	if result.ResultCode != "SUCCESS" {
+		err = errors.New(result.ReturnMsg)
+		return
+	}
+	if result.ResultCode != "SUCCESS" {
+		err = errors.New(result.ErrCodeDes)
+		return
+	}
+	wxaRequest = new(wxpay.PayWxaRequest)
+	wxaRequest.SignType = "MD5"
+	wxaRequest.NonceStr = wxpay.GetNonceStr()
+	wxaRequest.TimeStamp = fmt.Sprintf("%d", time.Now().Unix())
+	wxaRequest.Package = fmt.Sprintf("prepay_id=%s", result.PrepayId)
+	wxaRequest.SetSign(api.Config.AppId, api.Config.Key)
 	return
 }
