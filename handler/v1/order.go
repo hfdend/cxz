@@ -50,7 +50,7 @@ type OrderGetByOrderIDArgs struct {
 }
 
 // 订单详情
-// swagger:model OrderGetByOrderIDResp
+// swagger:response OrderGetByOrderIDResp
 type OrderGetByOrderIDResp struct {
 	// in: body
 	Body *models.Order

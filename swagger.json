@@ -1012,6 +1012,12 @@
         "$ref": "#/definitions/Order"
       }
     },
+    "OrderGetByOrderIDResp": {
+      "description": "订单详情",
+      "schema": {
+        "$ref": "#/definitions/Order"
+      }
+    },
     "OrderGetListResp": {
       "description": "订单列表",
       "schema": {

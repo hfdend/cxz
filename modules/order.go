@@ -6,6 +6,7 @@ import (
 	"github.com/hfdend/cxz/cli"
 	"github.com/hfdend/cxz/errors"
 	"github.com/hfdend/cxz/models"
+	"github.com/hfdend/cxz/payment/wxpay"
 	"github.com/hfdend/cxz/utils"
 )
 
@@ -156,5 +157,10 @@ func (order) GetListDetail(cond models.OrderCondition, pager *models.Pager) (lis
 		v.OrderAddress, _ = addressesMap[v.OrderID]
 		v.OrderProducts, _ = productsMap[v.OrderID]
 	}
+	return
+}
+
+// 小程序支付
+func (order) WXAPay(orderID string) (wxaRequest *wxpay.PayWxaRequest, err error) {
 	return
 }
