@@ -3,8 +3,8 @@ package handler
 import (
 	"encoding/xml"
 	"fmt"
-	"html/template"
 	"io/ioutil"
+	"text/template"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
