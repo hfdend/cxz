@@ -16,6 +16,9 @@ type OrderBuildArgs struct {
 	Body struct {
 		AddressID   int                        `json:"address_id"`
 		ProductInfo []modules.OrderProductInfo `json:"product_info"`
+		// 买家留言
+		Notice     string `json:"notice"`
+		WeekNumber int    `json:"week_number"`
 	}
 }
 
@@ -36,7 +39,7 @@ func (order) Build(c *gin.Context) {
 		return
 	}
 	user := GetUser(c)
-	order, err := modules.Order.Build(user.ID, args.Body.AddressID, args.Body.ProductInfo)
+	order, err := modules.Order.Build(user.ID, args.Body.AddressID, args.Body.ProductInfo, args.Body.Notice, args.Body.WeekNumber)
 	if err != nil {
 		JSON(c, err)
 	} else {

@@ -19,7 +19,7 @@ type OrderProductInfo struct {
 	Number    int `json:"number"`
 }
 
-func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Order, err error) {
+func (order) Build(userID, addressID int, info []OrderProductInfo, notice string, weekNumber int) (o *models.Order, err error) {
 	var address *models.Address
 	if address, err = models.AddressDefault.GetByID(addressID); err != nil {
 		return
@@ -69,8 +69,8 @@ func (order) Build(userID, addressID int, info []OrderProductInfo) (o *models.Or
 		o.OrderProducts = append(o.OrderProducts, orderProduct)
 		o.Price += orderProduct.IPrice
 	}
-	o.Fee = 0
-	o.PaymentPrice = o.Price + o.Fee
+	o.Freight = 0
+	o.PaymentPrice = o.Price + o.Freight
 	o.OrderAddress = new(models.OrderAddress)
 	o.OrderAddress.OrderID = o.OrderID
 	o.OrderAddress.AddressID = address.ID
@@ -161,6 +161,19 @@ func (order) GetListDetail(cond models.OrderCondition, pager *models.Pager) (lis
 }
 
 // 小程序支付
-func (order) WXAPay(orderID string) (wxaRequest *wxpay.PayWxaRequest, err error) {
+func (order) WXAPay(orderID string, userID int) (wxaRequest *wxpay.PayWxaRequest, err error) {
+	var order *models.Order
+	if order, err = models.OrderDefault.GetByOrderIDAndUserID(orderID, userID); err != nil {
+		return
+	} else if order == nil {
+		err = errors.New("订单不存在")
+		return
+	}
+	var c wxpay.PayConfig
+	c.AppId = "wx56fb16e23ab0442c"
+	c.MchId = "1505266461"
+	c.AppSecret = "3f31b9cc1a9721851a3c63cec1cb3de1"
+	api := wxpay.NewApi(c)
+	_ = api
 	return
 }

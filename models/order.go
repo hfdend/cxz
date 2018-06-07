@@ -32,8 +32,8 @@ type Order struct {
 	PlanID int `json:"plan_id"`
 	// 金额
 	Price float64 `json:"price"`
-	// 手续费
-	Fee float64 `json:"fee"`
+	// 运费
+	Freight float64 `json:"freight"`
 	// 支付金额
 	PaymentPrice float64 `json:"payment_price"`
 	// 支付方式 1: 微信支付

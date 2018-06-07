@@ -262,12 +262,22 @@
                   "format": "int64",
                   "x-go-name": "AddressID"
                 },
+                "notice": {
+                  "description": "买家留言",
+                  "type": "string",
+                  "x-go-name": "Notice"
+                },
                 "product_info": {
                   "type": "array",
                   "items": {
                     "$ref": "#/definitions/OrderProductInfo"
                   },
                   "x-go-name": "ProductInfo"
+                },
+                "week_number": {
+                  "type": "integer",
+                  "format": "int64",
+                  "x-go-name": "WeekNumber"
                 }
               }
             }
@@ -616,11 +626,11 @@
           "format": "int64",
           "x-go-name": "ExpTime"
         },
-        "fee": {
-          "description": "手续费",
+        "freight": {
+          "description": "运费",
           "type": "number",
           "format": "double",
-          "x-go-name": "Fee"
+          "x-go-name": "Freight"
         },
         "id": {
           "type": "integer",
