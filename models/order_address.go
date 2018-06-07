@@ -41,3 +41,8 @@ func (OrderAddress) GetByOrderID(orderID string) (*OrderAddress, error) {
 	}
 	return &data, nil
 }
+
+func (OrderAddress) GetByOrderIDs(orderIDs []string) (list []*OrderAddress, err error) {
+	err = cli.DB.Where("order_id in (?)", orderIDs).Find(&list).Error
+	return
+}

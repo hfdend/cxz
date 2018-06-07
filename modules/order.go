@@ -117,6 +117,44 @@ func (order) GetByID(orderID string, userID int) (o *models.Order, err error) {
 }
 
 func (order) GetList(cond models.OrderCondition, pager *models.Pager) (list []*models.Order, err error) {
-	list, err = models.OrderDefault.GetList(cond, pager)
+	if list, err = models.OrderDefault.GetList(cond, pager); err != nil {
+		return
+	}
+	return
+}
+
+func (order) GetListDetail(cond models.OrderCondition, pager *models.Pager) (list []*models.Order, err error) {
+	if list, err = models.OrderDefault.GetList(cond, pager); err != nil {
+		return
+	}
+	if len(list) == 0 {
+		return
+	}
+	var (
+		orderIDs     []string
+		addresses    []*models.OrderAddress
+		products     []*models.OrderProduct
+		addressesMap = map[string]*models.OrderAddress{}
+		productsMap  = map[string][]*models.OrderProduct{}
+	)
+	for _, v := range list {
+		orderIDs = append(orderIDs, v.OrderID)
+	}
+	if addresses, err = models.OrderAddressDefault.GetByOrderIDs(orderIDs); err != nil {
+		return
+	}
+	if products, err = models.OrderProductDefault.GetByOrderIDs(orderIDs); err != nil {
+		return
+	}
+	for _, v := range addresses {
+		addressesMap[v.OrderID] = v
+	}
+	for _, v := range products {
+		productsMap[v.OrderID] = append(productsMap[v.OrderID], v)
+	}
+	for _, v := range list {
+		v.OrderAddress, _ = addressesMap[v.OrderID]
+		v.OrderProducts, _ = productsMap[v.OrderID]
+	}
 	return
 }

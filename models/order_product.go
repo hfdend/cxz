@@ -63,6 +63,16 @@ func (OrderProduct) GetByOrderID(orderID string) (list []*OrderProduct, err erro
 	return
 }
 
+func (OrderProduct) GetByOrderIDs(orderIDs []string) (list []*OrderProduct, err error) {
+	if err = cli.DB.Model(OrderProduct{}).Where("order_id in (?)", orderIDs).Find(&list).Error; err != nil {
+		return
+	}
+	for _, v := range list {
+		v.SetImageSrc()
+	}
+	return
+}
+
 func (op *OrderProduct) SetImageSrc() {
 	if op.Image == "" {
 		return

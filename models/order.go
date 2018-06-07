@@ -112,7 +112,7 @@ func (Order) GetList(cond OrderCondition, pager *Pager) (list []*Order, err erro
 	if cond.Status != 0 {
 		db = db.Where("status = ?", cond.Status)
 	}
-	db = db.Where("exp_time > ?", time.Now())
+	db = db.Where("exp_time > ? or exp_time = 0", time.Now())
 	if pager != nil {
 		if db, err = pager.Exec(db); err != nil {
 			return
