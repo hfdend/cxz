@@ -369,6 +369,35 @@
         }
       }
     },
+    "/order/wxapayment": {
+      "post": {
+        "description": "小程序支付",
+        "tags": [
+          "订单"
+        ],
+        "operationId": "Order_WXAPayment",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "order_id": {
+                  "type": "string",
+                  "x-go-name": "OrderID"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/OrderWXAPaymentResp"
+          }
+        }
+      }
+    },
     "/product/attribute/items": {
       "get": {
         "tags": [
@@ -648,6 +677,10 @@
       "description": "订单",
       "type": "object",
       "properties": {
+        "body": {
+          "type": "string",
+          "x-go-name": "Body"
+        },
         "created": {
           "description": "创建时间",
           "type": "integer",
@@ -925,6 +958,33 @@
       },
       "x-go-package": "github.com/hfdend/cxz/models"
     },
+    "PayWxaRequest": {
+      "description": "微信小程序调用支付对象",
+      "type": "object",
+      "properties": {
+        "nonceStr": {
+          "type": "string",
+          "x-go-name": "NonceStr"
+        },
+        "package": {
+          "type": "string",
+          "x-go-name": "Package"
+        },
+        "paySign": {
+          "type": "string",
+          "x-go-name": "PaySign"
+        },
+        "signType": {
+          "type": "string",
+          "x-go-name": "SignType"
+        },
+        "timeStamp": {
+          "type": "string",
+          "x-go-name": "TimeStamp"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/payment/wxpay"
+    },
     "Product": {
       "type": "object",
       "properties": {
@@ -1092,6 +1152,12 @@
             "$ref": "#/definitions/Pager"
           }
         }
+      }
+    },
+    "OrderWXAPaymentResp": {
+      "description": "小程序支付",
+      "schema": {
+        "$ref": "#/definitions/PayWxaRequest"
       }
     },
     "PassportLoginByJsCodeResp": {

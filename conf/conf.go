@@ -53,9 +53,16 @@ var Config struct {
 		} `yaml:"oss"`
 	} `yaml:"aliyun"`
 	MiniProgram struct {
-		AppID  string `json:"appid"`
-		Secret string `json:"secret"`
-	} `json:"miniprogram"`
+		AppID  string `yaml:"appid"`
+		Secret string `yaml:"secret"`
+	} `yaml:"miniprogram"`
+	WXPay struct {
+		AppId      string  `yaml:"appid"`
+		MchId      string  `yaml:"mchid"`
+		Key        string  `yaml:"key"`
+		NotifyUrl  string  `yaml:"notify_url"`
+		TestAmount float64 `yaml:"test_amount"`
+	} `yaml:"wxpay"`
 }
 
 type FlagParseFn = func(fs *flag.FlagSet)

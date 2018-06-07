@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"time"
 
+	"strings"
+
+	"github.com/Sirupsen/logrus"
 	"github.com/hfdend/cxz/cli"
+	"github.com/hfdend/cxz/conf"
 	"github.com/hfdend/cxz/errors"
 	"github.com/hfdend/cxz/models"
 	"github.com/hfdend/cxz/payment/wxpay"
@@ -38,6 +42,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 	}
 	o.Status = models.OrderStatusWaitting
 	o.ExpTime = time.Now().Add(20 * time.Minute).Unix()
+	var body string
 	for _, v := range info {
 		if v.Number <= 0 {
 			err = errors.New("数量错误")
@@ -53,6 +58,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 			err = errors.New("商品金额错误")
 			return
 		}
+		body += fmt.Sprintf(",%s", product.Name)
 		orderProduct := new(models.OrderProduct)
 		orderProduct.OrderID = o.OrderID
 		orderProduct.ProductID = product.ID
@@ -69,6 +75,13 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 		orderProduct.Intro = product.Intro
 		o.OrderProducts = append(o.OrderProducts, orderProduct)
 		o.Price += orderProduct.IPrice
+	}
+	body = strings.TrimLeft(body, ",")
+	bodyRune := []rune(body)
+	if len(bodyRune) > 32 {
+		o.Body = string(bodyRune[0:32])
+	} else {
+		o.Body = body
 	}
 	o.Notice = notice
 	o.Freight = 0
@@ -172,15 +185,20 @@ func (order) WXAPay(orderID string, user *models.User, ip string) (wxaRequest *w
 		return
 	}
 	var c wxpay.PayConfig
-	c.AppId = "wx56fb16e23ab0442c"
-	c.MchId = "1505266461"
-	c.AppSecret = "3f31b9cc1a9721851a3c63cec1cb3de1"
+	c.AppId = conf.Config.WXPay.AppId
+	c.MchId = conf.Config.WXPay.MchId
+	c.Key = conf.Config.WXPay.Key
+	c.NotifyUrl = conf.Config.WXPay.NotifyUrl
 	api := wxpay.NewApi(c)
-
+	api.Logger = logrus.New()
 	query := wxpay.NewPayUnifiedOrder()
-	query.SetBody("订单商品")
+	query.SetBody(order.Body)
 	query.SetOutTradeNo(order.OrderID)
-	query.SetTotalFee(int(utils.Round(order.PaymentPrice*100, 0)))
+	if conf.Config.WXPay.TestAmount > 0 {
+		query.SetTotalFee(int(utils.Round(conf.Config.WXPay.TestAmount*100, 0)))
+	} else {
+		query.SetTotalFee(int(utils.Round(order.PaymentPrice*100, 0)))
+	}
 	query.SetOpenId(user.OpenID)
 	query.SetTradeType("JSAPI")
 	query.SetSpbillCreateIp(ip)

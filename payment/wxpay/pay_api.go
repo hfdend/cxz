@@ -249,6 +249,8 @@ func (api PayApi) tlsConfig() (*tls.Config, error) {
 func (api PayApi) postXmlCurl(xmlString, url string, tlsConfig *tls.Config, timeout time.Duration) ([]byte, error) {
 	buff := bytes.NewBufferString(xmlString)
 	api.info(fmt.Sprintf("request data: %v", buff))
+	fmt.Println(url)
+	fmt.Println(xmlString)
 	req, err := http.NewRequest("POST", url, buff)
 	if err != nil {
 		api.error(fmt.Sprintf("new request error: %s", err.Error()))

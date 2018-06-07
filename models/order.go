@@ -28,6 +28,7 @@ type Order struct {
 	Model
 	OrderID string `json:"order_id"`
 	UserID  int    `json:"user_id"`
+	Body    string `json:"body"`
 	// 如果是月够的则有值
 	PlanID int `json:"plan_id"`
 	// 金额

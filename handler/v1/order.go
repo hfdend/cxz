@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hfdend/cxz/models"
 	"github.com/hfdend/cxz/modules"
+	"github.com/hfdend/cxz/payment/wxpay"
 )
 
 type order int
@@ -36,7 +37,7 @@ type OrderGetFreightResp struct {
 func (order) GetFreight(c *gin.Context) {
 	var args OrderGetFreightArgs
 	var resp OrderGetFreightResp
-	if c.Bind(args.Body) != nil {
+	if c.Bind(&args.Body) != nil {
 		return
 	}
 	resp.Body.Freight = 0
@@ -141,6 +142,41 @@ func (order) GetList(c *gin.Context) {
 	cond.UserID = user.ID
 	resp.Body.Pager = models.NewPager(args.Page, 20)
 	if resp.Body.List, err = modules.Order.GetListDetail(cond, resp.Body.Pager); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, resp.Body)
+	}
+}
+
+// swagger:parameters Order_WXAPayment
+type OrderWXAPaymentArgs struct {
+	// in: body
+	Body struct {
+		OrderID string `json:"order_id"`
+	}
+}
+
+// 小程序支付
+// swagger:response OrderWXAPaymentResp
+type OrderWXAPaymentResp struct {
+	// in: body
+	Body *wxpay.PayWxaRequest
+}
+
+// swagger:route POST /order/wxapayment 订单 Order_WXAPayment
+// 小程序支付
+// responses:
+//     200: OrderWXAPaymentResp
+func (order) WXAPayment(c *gin.Context) {
+	var args OrderWXAPaymentArgs
+	var resp OrderWXAPaymentResp
+	var err error
+	if c.Bind(&args.Body) != nil {
+		return
+	}
+	body := args.Body
+	user := GetUser(c)
+	if resp.Body, err = modules.Order.WXAPay(body.OrderID, user, c.ClientIP()); err != nil {
 		JSON(c, err)
 	} else {
 		JSON(c, resp.Body)
