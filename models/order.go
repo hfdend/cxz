@@ -22,6 +22,19 @@ const (
 	OrderStatusDeliveried
 )
 
+// 发货状态
+// swagger:model DeliveryStatus
+// 1: 等待发货
+// 2: 部分周期发货
+// 2: 发货完成
+type DeliveryStatus int
+
+const (
+	DeliveryStatusWaiting DeliveryStatus = iota + 1
+	DeliveryStatusIng
+	DeliveryStatusOver
+)
+
 // 订单
 // swagger:model Order
 type Order struct {
@@ -40,9 +53,16 @@ type Order struct {
 	PaymentPrice float64 `json:"payment_price"`
 	// 支付方式 1: 微信支付
 	PaymentMethod int `json:"payment_method"`
+	// 购买了几周
+	WeekNumber int `json:"week_number"`
+	// 发货了几周
+	WeekDelivered int `json:"week_delivered"`
 	// 买家留言
-	Notice string      `json:"notice"`
+	Notice string `json:"notice"`
+	// 订单支付状态
 	Status OrderStatus `json:"status"`
+	// 发货状态
+	DeliveryStatus DeliveryStatus `json:"delivery_status"`
 	// 创建时间
 	Created int64 `json:"created"`
 	// 支付截止时间
@@ -51,8 +71,12 @@ type Order struct {
 	PaymentTime int64 `json:"payment_time"`
 	UpdateTime  int64 `json:"update_time"`
 
+	// 订单包含的商品
 	OrderProducts []*OrderProduct `json:"order_products" gorm:"-"`
-	OrderAddress  *OrderAddress   `json:"order_address" gorm:"-"`
+	// 订单地址
+	OrderAddress *OrderAddress `json:"order_address" gorm:"-"`
+	// 订单发货计划
+	OrderPlans []*OrderPlan `json:"order_plans" gorm:"-"`
 }
 
 type OrderCondition struct {

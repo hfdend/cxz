@@ -15,7 +15,7 @@ func TestOrder_Build(t *testing.T) {
 			ProductID: 10,
 			Number:    1,
 		},
-	}, "", 1)
+	}, "快点发货", 3)
 	fmt.Println(err)
 	fmt.Println(order)
 }
@@ -27,4 +27,9 @@ func TestOrder_WXAPay(t *testing.T) {
 	res, err := Order.WXAPay("2018060417030300011393", user, "127.0.0.1")
 	fmt.Println(err)
 	fmt.Println(res)
+}
+
+func TestOrder_PaymentSuccess(t *testing.T) {
+	cli.Init()
+	Order.PaymentSuccess("2018060810504500016033", "4201000147201806075200163613")
 }

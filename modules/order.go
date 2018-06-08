@@ -2,9 +2,8 @@ package modules
 
 import (
 	"fmt"
-	"time"
-
 	"strings"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/hfdend/cxz/cli"
@@ -25,6 +24,10 @@ type OrderProductInfo struct {
 }
 
 func (order) Build(userID, addressID int, info []OrderProductInfo, notice string, weekNumber int) (o *models.Order, err error) {
+	if len(info) > 20 {
+		err = errors.New("一个订单最多支持20个商品，请分开结算")
+		return
+	}
 	var address *models.Address
 	if address, err = models.AddressDefault.GetByID(addressID); err != nil {
 		return
@@ -35,12 +38,17 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 		err = errors.New("收货地址错误")
 		return
 	}
+	if weekNumber <= 0 {
+		weekNumber = 1
+	}
 	o = new(models.Order)
 	o.UserID = userID
 	if o.OrderID, err = models.BuildOrderID(); err != nil {
 		return
 	}
+	o.WeekNumber = weekNumber
 	o.Status = models.OrderStatusWaiting
+	o.DeliveryStatus = models.DeliveryStatusWaiting
 	o.ExpTime = time.Now().Add(20 * time.Minute).Unix()
 	var body string
 	for _, v := range info {
@@ -83,6 +91,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 	} else {
 		o.Body = body
 	}
+	o.Price = utils.Round(o.Price*2, 2)
 	o.Notice = notice
 	o.Freight = 0
 	o.PaymentPrice = o.Price + o.Freight
@@ -129,6 +138,9 @@ func (order) GetByID(orderID string, userID int) (o *models.Order, err error) {
 	if o.OrderProducts, err = models.OrderProductDefault.GetByOrderID(o.OrderID); err != nil {
 		return
 	}
+	if o.OrderPlans, err = models.OrderPlanDefault.GetByOrderID(o.OrderID); err != nil {
+		return
+	}
 	return
 }
 
@@ -150,8 +162,10 @@ func (order) GetListDetail(cond models.OrderCondition, pager *models.Pager) (lis
 		orderIDs     []string
 		addresses    []*models.OrderAddress
 		products     []*models.OrderProduct
+		plans        []*models.OrderPlan
 		addressesMap = map[string]*models.OrderAddress{}
 		productsMap  = map[string][]*models.OrderProduct{}
+		planMap      = map[string][]*models.OrderPlan{}
 	)
 	for _, v := range list {
 		orderIDs = append(orderIDs, v.OrderID)
@@ -162,15 +176,22 @@ func (order) GetListDetail(cond models.OrderCondition, pager *models.Pager) (lis
 	if products, err = models.OrderProductDefault.GetByOrderIDs(orderIDs); err != nil {
 		return
 	}
+	if plans, err = models.OrderPlanDefault.GetByOrderIDs(orderIDs); err != nil {
+		return
+	}
 	for _, v := range addresses {
 		addressesMap[v.OrderID] = v
 	}
 	for _, v := range products {
 		productsMap[v.OrderID] = append(productsMap[v.OrderID], v)
 	}
+	for _, v := range plans {
+		planMap[v.OrderID] = append(planMap[v.OrderID], v)
+	}
 	for _, v := range list {
 		v.OrderAddress, _ = addressesMap[v.OrderID]
 		v.OrderProducts, _ = productsMap[v.OrderID]
+		v.OrderPlans, _ = planMap[v.OrderID]
 	}
 	return
 }
@@ -236,6 +257,21 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 	if err := order.ToSuccess(db, transactionID); err != nil {
 		db.Rollback()
 		return err
+	}
+	y, m, d := time.Now().Date()
+	t := time.Date(y, m, d, 0, 0, 0, 0, time.Local)
+	// 添加发货计划
+	for i := 0; i < order.WeekNumber; i++ {
+		op := new(models.OrderPlan)
+		op.OrderID = order.OrderID
+		op.Item = i + 1
+		op.TotalItem = order.WeekNumber
+		op.PlanTime = t.Add(time.Duration(i+1) * 24 * time.Hour).Unix()
+		op.Status = models.PlanStatusWaiting
+		if err = op.Insert(db); err != nil {
+			db.Rollback()
+			return err
+		}
 	}
 	db.Commit()
 	return nil
