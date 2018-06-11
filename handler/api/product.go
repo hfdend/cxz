@@ -67,6 +67,7 @@ func (product) Save(c *gin.Context) {
 	product.Taste = args.Taste
 	product.Unit = args.Unit
 	product.Price = args.Price
+	product.Freight = args.Freight
 	product.Image = args.Image
 	product.Mark = args.Mark
 	product.Intro = args.Intro

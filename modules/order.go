@@ -23,6 +23,54 @@ type OrderProductInfo struct {
 	Number    int `json:"number"`
 }
 
+func (order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNumber int) (price, freight float64, body string, products []*models.OrderProduct, err error) {
+	var maxFreight float64
+	for _, v := range info {
+		if v.Number <= 0 {
+			err = errors.New("数量错误")
+			return
+		}
+		var product *models.Product
+		if product, err = models.ProductDefault.GetByID(v.ProductID); err != nil {
+			return
+		} else if product == nil {
+			err = errors.New("未找到商品")
+			return
+		} else if product.Price < 0 {
+			err = errors.New("商品金额错误")
+			return
+		}
+		if product.Freight > maxFreight {
+			maxFreight = product.Freight
+		}
+		body += fmt.Sprintf(",%s", product.Name)
+		orderProduct := new(models.OrderProduct)
+		orderProduct.OrderID = orderID
+		orderProduct.ProductID = product.ID
+		orderProduct.Number = v.Number
+		orderProduct.IPrice = utils.Round(product.Price*float64(v.Number), 2)
+
+		orderProduct.Name = product.Name
+		orderProduct.Type = product.Type
+		orderProduct.Taste = product.Taste
+		orderProduct.Unit = product.Unit
+		orderProduct.Price = product.Price
+		orderProduct.Image = product.Image
+		orderProduct.Mark = product.Mark
+		orderProduct.Intro = product.Intro
+		products = append(products, orderProduct)
+		price += orderProduct.IPrice
+	}
+	body = strings.TrimLeft(body, ",")
+	bodyRune := []rune(body)
+	if len(bodyRune) > 32 {
+		body = string(bodyRune[0:32])
+	}
+	freight = utils.Round(maxFreight*float64(weekNumber), 2)
+	price = utils.Round(price*float64(weekNumber), 2)
+	return
+}
+
 func (order) Build(userID, addressID int, info []OrderProductInfo, notice string, weekNumber int) (o *models.Order, err error) {
 	if len(info) > 20 {
 		err = errors.New("一个订单最多支持20个商品，请分开结算")
@@ -50,49 +98,20 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 	o.Status = models.OrderStatusWaiting
 	o.DeliveryStatus = models.DeliveryStatusWaiting
 	o.ExpTime = time.Now().Add(20 * time.Minute).Unix()
-	var body string
-	for _, v := range info {
-		if v.Number <= 0 {
-			err = errors.New("数量错误")
-			return
-		}
-		var product *models.Product
-		if product, err = models.ProductDefault.GetByID(v.ProductID); err != nil {
-			return
-		} else if product == nil {
-			err = errors.New("未找到商品")
-			return
-		} else if product.Price < 0 {
-			err = errors.New("商品金额错误")
-			return
-		}
-		body += fmt.Sprintf(",%s", product.Name)
-		orderProduct := new(models.OrderProduct)
-		orderProduct.OrderID = o.OrderID
-		orderProduct.ProductID = product.ID
-		orderProduct.Number = v.Number
-		orderProduct.IPrice = utils.Round(product.Price*float64(v.Number), 2)
 
-		orderProduct.Name = product.Name
-		orderProduct.Type = product.Type
-		orderProduct.Taste = product.Taste
-		orderProduct.Unit = product.Unit
-		orderProduct.Price = product.Price
-		orderProduct.Image = product.Image
-		orderProduct.Mark = product.Mark
-		orderProduct.Intro = product.Intro
-		o.OrderProducts = append(o.OrderProducts, orderProduct)
-		o.Price += orderProduct.IPrice
+	var (
+		body           string
+		price, freight float64
+		products       []*models.OrderProduct
+	)
+
+	if price, freight, body, products, err = Order.GetOrderProducts(o.OrderID, info); err != nil {
+		return
 	}
-	body = strings.TrimLeft(body, ",")
-	bodyRune := []rune(body)
-	if len(bodyRune) > 32 {
-		o.Body = string(bodyRune[0:32])
-	} else {
-		o.Body = body
-	}
+	o.Body = body
+	o.Freight = freight
 	// 金额等于 商品金额 * 期数 + 运费
-	o.Price = utils.Round(o.Price*float64(o.WeekNumber)+o.Freight, 2)
+	o.Price = price
 	o.Notice = notice
 	o.Freight = 0
 	o.PaymentPrice = o.Price + o.Freight
@@ -105,6 +124,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 	o.OrderAddress.DistrictCode = address.DistrictCode
 	o.OrderAddress.DistrictName = address.DistrictName
 	o.OrderAddress.DetailAddress = address.DetailAddress
+	o.OrderProducts = products
 	db := cli.DB.Begin()
 	defer func() {
 		if err == nil {
@@ -265,9 +285,11 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 	for i := 0; i < order.WeekNumber; i++ {
 		op := new(models.OrderPlan)
 		op.OrderID = order.OrderID
-		op.Price = order.Price
 		if order.Freight > 0 {
 			op.Freight = utils.Round(order.Freight/float64(order.WeekNumber), 2)
+		}
+		if order.Price > 0 {
+			op.Price = utils.Round(order.Price/float64(order.WeekNumber), 2)
 		}
 		op.Item = i + 1
 		op.TotalItem = order.WeekNumber

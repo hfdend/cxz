@@ -22,6 +22,8 @@ type Product struct {
 	Unit string `json:"unit"`
 	// 售价
 	Price float64 `json:"price"`
+	// 运费
+	Freight float64 `json:"freight"`
 	// 图片
 	Image string `json:"image"`
 	// 备注

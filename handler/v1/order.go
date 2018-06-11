@@ -27,6 +27,8 @@ type OrderGetFreightResp struct {
 	Body struct {
 		// 运费
 		Freight float64 `json:"freight"`
+		// 商品价格
+		Price float64 `json:"price"`
 	}
 }
 
@@ -40,8 +42,13 @@ func (order) GetFreight(c *gin.Context) {
 	if c.Bind(&args.Body) != nil {
 		return
 	}
-	resp.Body.Freight = 0
-	JSON(c, resp.Body)
+	if price, freight, _, _, err := modules.Order.GetOrderProducts("", args.Body.ProductInfo, args.Body.WeekNumber); err != nil {
+		JSON(c, err)
+	} else {
+		resp.Body.Freight = freight
+		resp.Body.Price = price
+		JSON(c, resp.Body)
+	}
 }
 
 // swagger:parameters Order_Build
