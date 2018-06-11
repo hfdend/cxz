@@ -964,6 +964,11 @@
           "format": "int64",
           "x-go-name": "TotalItem"
         },
+        "user_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UserID"
+        },
         "waybill_number": {
           "description": "快递单号",
           "type": "string",
