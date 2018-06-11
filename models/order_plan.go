@@ -38,6 +38,12 @@ type OrderPlan struct {
 	OrderID string `json:"order_id"`
 	// 第几期
 	Item int `json:"item"`
+	// 金额
+	Price float64 `json:"price"`
+	// 运费
+	Freight float64 `json:"freight"`
+	// 退款金额
+	RefundAmount float64 `json:"refund_amount"`
 	// 总共几期
 	TotalItem int `json:"total_item"`
 	// 计划发货时间

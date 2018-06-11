@@ -91,7 +91,8 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 	} else {
 		o.Body = body
 	}
-	o.Price = utils.Round(o.Price*2, 2)
+	// 金额等于 商品金额 * 期数 + 运费
+	o.Price = utils.Round(o.Price*float64(o.WeekNumber)+o.Freight, 2)
 	o.Notice = notice
 	o.Freight = 0
 	o.PaymentPrice = o.Price + o.Freight
@@ -264,6 +265,10 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 	for i := 0; i < order.WeekNumber; i++ {
 		op := new(models.OrderPlan)
 		op.OrderID = order.OrderID
+		op.Price = order.Price
+		if order.Freight > 0 {
+			op.Freight = utils.Round(order.Freight/float64(order.WeekNumber), 2)
+		}
 		op.Item = i + 1
 		op.TotalItem = order.WeekNumber
 		op.PlanTime = t.Add(time.Duration(i+1) * 24 * 7 * time.Hour).Unix()
