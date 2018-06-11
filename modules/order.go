@@ -98,7 +98,6 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 	o.Status = models.OrderStatusWaiting
 	o.DeliveryStatus = models.DeliveryStatusWaiting
 	o.ExpTime = time.Now().Add(20 * time.Minute).Unix()
-
 	var (
 		body           string
 		price, freight float64
@@ -113,7 +112,6 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 	// 金额等于 商品金额 * 期数 + 运费
 	o.Price = price
 	o.Notice = notice
-	o.Freight = 0
 	o.PaymentPrice = o.Price + o.Freight
 	o.OrderAddress = new(models.OrderAddress)
 	o.OrderAddress.OrderID = o.OrderID

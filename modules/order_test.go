@@ -12,8 +12,8 @@ func TestOrder_Build(t *testing.T) {
 	cli.Init()
 	order, err := Order.Build(3, 2, []OrderProductInfo{
 		{
-			ProductID: 10,
-			Number:    1,
+			ProductID: 3,
+			Number:    2,
 		},
 	}, "快点发货", 3)
 	fmt.Println(err)
@@ -32,4 +32,18 @@ func TestOrder_WXAPay(t *testing.T) {
 func TestOrder_PaymentSuccess(t *testing.T) {
 	cli.Init()
 	Order.PaymentSuccess("2018060810504500016033", "4201000147201806075200163613")
+}
+
+func TestOrder_GetOrderProducts(t *testing.T) {
+	cli.Init()
+	info := []OrderProductInfo{
+		{
+			ProductID: 3,
+			Number:    2,
+		},
+	}
+	price, freight, _, _, err := Order.GetOrderProducts("", info, 3)
+	fmt.Println(err)
+	fmt.Println(price)
+	fmt.Println(freight)
 }
