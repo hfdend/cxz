@@ -266,12 +266,71 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 		op.OrderID = order.OrderID
 		op.Item = i + 1
 		op.TotalItem = order.WeekNumber
-		op.PlanTime = t.Add(time.Duration(i+1) * 24 * time.Hour).Unix()
+		op.PlanTime = t.Add(time.Duration(i+1) * 24 * 7 * time.Hour).Unix()
 		op.Status = models.PlanStatusWaiting
 		if err = op.Insert(db); err != nil {
 			db.Rollback()
 			return err
 		}
+	}
+	db.Commit()
+	return nil
+}
+
+// 订单发货
+func (order) Delivery(orderID string, item int, express, waybillNumber string) error {
+	db := cli.DB.Begin()
+	order, err := models.OrderDefault.GetByOrderIDForUpdate(db, orderID)
+	if err != nil {
+		db.Rollback()
+		return err
+	} else if order == nil {
+		db.Rollback()
+		return nil
+	} else if order.DeliveryStatus == models.DeliveryStatusOver {
+		db.Rollback()
+		return errors.New("订单已发货完成")
+	}
+	planList, err := models.OrderPlanDefault.GetByOrderIDForUpdate(db, orderID)
+	var plan *models.OrderPlan
+	if err != nil {
+		db.Rollback()
+		return err
+	}
+	for _, v := range planList {
+		if v.Item == item {
+			plan = v
+		} else if v.Item < item && v.Status == models.PlanStatusWaiting {
+			db.Rollback()
+			return errors.New("请按顺序发货")
+		}
+	}
+	if plan == nil {
+		db.Rollback()
+		return errors.New("没有找到发货计划")
+	} else if plan.Status != models.PlanStatusWaiting {
+		db.Rollback()
+		return errors.New("计划状态不正确")
+	} else if plan.ApplyStatus == models.ApplyStatusWaiting {
+		db.Rollback()
+		return errors.New("计划正在申请取消不能发货")
+	} else if plan.ApplyStatus == models.ApplyStatusSuccess {
+		db.Rollback()
+		return errors.New("计划已经申请取消不能发货")
+	}
+	if err := plan.Delivery(db, express, waybillNumber); err != nil {
+		db.Rollback()
+		return err
+	}
+	var deliveryStatus models.DeliveryStatus
+	if plan.Item != plan.TotalItem {
+		deliveryStatus = models.DeliveryStatusIng
+	} else {
+		deliveryStatus = models.DeliveryStatusOver
+	}
+	if err := order.UpdateDeliveryStatus(db, deliveryStatus, plan.Item); err != nil {
+		db.Rollback()
+		return err
 	}
 	db.Commit()
 	return nil

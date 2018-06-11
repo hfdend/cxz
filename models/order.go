@@ -10,8 +10,6 @@ import (
 // 订单状态
 // 1: 等待付款
 // 2: 付款成功
-// 3: 订单发货中 (月够订单)
-// 4: 发货完成
 // swagger:model OrderStatus
 type OrderStatus int
 
@@ -80,11 +78,12 @@ type Order struct {
 }
 
 type OrderCondition struct {
-	UserID    int         `json:"user_id" form:"user_id"`
-	OrderID   string      `json:"order_id" form:"order_id"`
-	StartTime int64       `json:"start_time" form:"start_time"`
-	EndTime   int64       `json:"end_time" form:"end_time"`
-	Status    OrderStatus `json:"status" form:"status"`
+	UserID         int            `json:"user_id" form:"user_id"`
+	OrderID        string         `json:"order_id" form:"order_id"`
+	StartTime      int64          `json:"start_time" form:"start_time"`
+	EndTime        int64          `json:"end_time" form:"end_time"`
+	Status         OrderStatus    `json:"status" form:"status"`
+	DeliveryStatus DeliveryStatus `json:"delivery_status" form:"delivery_status"`
 }
 
 var OrderDefault Order
@@ -123,7 +122,11 @@ func (*Order) GetByOrderIDForUpdate(db *gorm.DB, orderID string) (*Order, error)
 
 func (Order) GetByOrderIDAndUserID(orderID string, userID int) (*Order, error) {
 	var data Order
-	if err := cli.DB.Where("order_id = ? and user_id = ?", orderID, userID).Find(&data).Error; err != nil {
+	db := cli.DB.Where("order_id = ?", orderID)
+	if userID != 0 {
+		db = db.Where("user_id = ?", userID)
+	}
+	if err := db.Find(&data).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return nil, nil
 		}
@@ -149,6 +152,9 @@ func (Order) GetList(cond OrderCondition, pager *Pager) (list []*Order, err erro
 	if cond.Status != 0 {
 		db = db.Where("status = ?", cond.Status)
 	}
+	if cond.DeliveryStatus != 0 {
+		db = db.Where("delivery_status = ?", cond.DeliveryStatus)
+	}
 	db = db.Where("exp_time > ? or exp_time = 0", time.Now())
 	if pager != nil {
 		if db, err = pager.Exec(db); err != nil {
@@ -172,6 +178,15 @@ func (o *Order) ToSuccess(db *gorm.DB, transactionID string) error {
 		"update_time":    time.Now().Unix(),
 		"transaction_id": transactionID,
 		"payment_method": 1,
+	}
+	return db.Model(o).Update(data).Error
+}
+
+func (o *Order) UpdateDeliveryStatus(db *gorm.DB, deliveryStatus DeliveryStatus, item int) error {
+	data := map[string]interface{}{
+		"update_time":     time.Now().Unix(),
+		"delivery_status": deliveryStatus,
+		"week_delivered":  item,
 	}
 	return db.Model(o).Update(data).Error
 }
