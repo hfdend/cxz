@@ -583,6 +583,12 @@
       },
       "x-go-package": "github.com/hfdend/cxz/models"
     },
+    "ApplyStatus": {
+      "description": "申请取消状态",
+      "type": "integer",
+      "format": "int64",
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
     "AttributeItem": {
       "type": "object",
       "properties": {
@@ -611,6 +617,12 @@
           "x-go-name": "Sort"
         }
       },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "DeliveryStatus": {
+      "description": "发货状态",
+      "type": "integer",
+      "format": "int64",
       "x-go-package": "github.com/hfdend/cxz/models"
     },
     "District": {
@@ -687,6 +699,9 @@
           "format": "int64",
           "x-go-name": "Created"
         },
+        "delivery_status": {
+          "$ref": "#/definitions/DeliveryStatus"
+        },
         "exp_time": {
           "description": "支付截止时间",
           "type": "integer",
@@ -716,7 +731,16 @@
           "type": "string",
           "x-go-name": "OrderID"
         },
+        "order_plans": {
+          "description": "订单发货计划",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderPlan"
+          },
+          "x-go-name": "OrderPlans"
+        },
         "order_products": {
+          "description": "订单包含的商品",
           "type": "array",
           "items": {
             "$ref": "#/definitions/OrderProduct"
@@ -756,6 +780,10 @@
         "status": {
           "$ref": "#/definitions/OrderStatus"
         },
+        "transaction_id": {
+          "type": "string",
+          "x-go-name": "TransactionID"
+        },
         "update_time": {
           "type": "integer",
           "format": "int64",
@@ -765,6 +793,18 @@
           "type": "integer",
           "format": "int64",
           "x-go-name": "UserID"
+        },
+        "week_delivered": {
+          "description": "发货了几周",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "WeekDelivered"
+        },
+        "week_number": {
+          "description": "购买了几周",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "WeekNumber"
         }
       },
       "x-go-package": "github.com/hfdend/cxz/models"
@@ -815,6 +855,96 @@
           "type": "integer",
           "format": "int64",
           "x-go-name": "UserID"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "OrderPlan": {
+      "type": "object",
+      "properties": {
+        "apply_cancel_time": {
+          "description": "取消申请时间",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ApplyCancelTime"
+        },
+        "apply_status": {
+          "$ref": "#/definitions/ApplyStatus"
+        },
+        "canceled_time": {
+          "description": "确认取消时间",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "CanceledTime"
+        },
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Created"
+        },
+        "delivery_time": {
+          "description": "实际发货时间",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "DeliveryTime"
+        },
+        "express": {
+          "description": "快递公司",
+          "type": "string",
+          "x-go-name": "Express"
+        },
+        "freight": {
+          "description": "运费",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Freight"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "item": {
+          "description": "第几期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Item"
+        },
+        "order_id": {
+          "type": "string",
+          "x-go-name": "OrderID"
+        },
+        "plan_time": {
+          "description": "计划发货时间",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PlanTime"
+        },
+        "price": {
+          "description": "金额",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Price"
+        },
+        "refund_amount": {
+          "description": "退款金额",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "RefundAmount"
+        },
+        "status": {
+          "$ref": "#/definitions/PlanStatus"
+        },
+        "total_item": {
+          "description": "总共几期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "TotalItem"
+        },
+        "waybill_number": {
+          "description": "快递单号",
+          "type": "string",
+          "x-go-name": "WaybillNumber"
         }
       },
       "x-go-package": "github.com/hfdend/cxz/models"
@@ -922,7 +1052,7 @@
       "x-go-package": "github.com/hfdend/cxz/modules"
     },
     "OrderStatus": {
-      "description": "订单状态\n1: 等待付款\n2: 付款成功\n3: 订单发货中 (月够订单)\n4: 发货完成",
+      "description": "订单状态\n1: 等待付款\n2: 付款成功",
       "type": "integer",
       "format": "int64",
       "x-go-package": "github.com/hfdend/cxz/models"
@@ -984,6 +1114,12 @@
         }
       },
       "x-go-package": "github.com/hfdend/cxz/payment/wxpay"
+    },
+    "PlanStatus": {
+      "description": "计划状态\n1: 等待发货\n2: 已发货",
+      "type": "integer",
+      "format": "int64",
+      "x-go-package": "github.com/hfdend/cxz/models"
     },
     "Product": {
       "type": "object",
