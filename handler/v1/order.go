@@ -11,6 +11,26 @@ type order int
 
 var Order order
 
+// 订阅列表
+// swagger:response GetOrderPlanListResp
+type GetOrderPlanListResp struct {
+	// in: body
+	Body []*models.OrderPlan
+}
+
+// swagger:route GET /order/plans 订单 Order_GetOrderPlanList
+// 获取订单订阅
+// responses:
+//     200: GetOrderPlanListResp
+func (order) GetOrderPlanList(c *gin.Context) {
+	user := GetUser(c)
+	if list, err := models.OrderPlanDefault.GetByUserID(user.ID); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, list)
+	}
+}
+
 // swagger:parameters Order_GetFreight
 type OrderGetFreightArgs struct {
 	// in: body

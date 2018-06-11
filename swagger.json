@@ -335,6 +335,20 @@
         }
       }
     },
+    "/order/plans": {
+      "get": {
+        "description": "获取订单订阅",
+        "tags": [
+          "订单"
+        ],
+        "operationId": "Order_GetOrderPlanList",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetOrderPlanListResp"
+          }
+        }
+      }
+    },
     "/order/products/freight": {
       "post": {
         "description": "获取商品运费",
@@ -1258,6 +1272,15 @@
         "type": "array",
         "items": {
           "$ref": "#/definitions/District"
+        }
+      }
+    },
+    "GetOrderPlanListResp": {
+      "description": "订阅列表",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/OrderPlan"
         }
       }
     },

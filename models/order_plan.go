@@ -114,6 +114,11 @@ func (OrderPlan) HasNoDelivery(db *gorm.DB, orderID string) (bool, error) {
 	return true, nil
 }
 
+func (OrderPlan) GetByUserID(userID int) (list []*OrderPlan, err error) {
+	err = cli.DB.Where("user_id = ?", userID).Order("plan_time asc, id asc").Find(&list).Error
+	return
+}
+
 func (op *OrderPlan) Delivery(db *gorm.DB, express, waybillNumber string) error {
 	data := map[string]interface{}{
 		"express":        express,
