@@ -290,6 +290,7 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 	for i := 0; i < order.WeekNumber; i++ {
 		op := new(models.OrderPlan)
 		op.OrderID = order.OrderID
+		op.UserID = order.UserID
 		if order.Freight > 0 {
 			op.Freight = utils.Round(order.Freight/float64(order.WeekNumber), 2)
 		}

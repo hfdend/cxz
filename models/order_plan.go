@@ -36,6 +36,7 @@ const (
 type OrderPlan struct {
 	Model
 	OrderID string `json:"order_id"`
+	UserID  int    `json:"user_id"`
 	// 第几期
 	Item int `json:"item"`
 	// 金额
