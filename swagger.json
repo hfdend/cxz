@@ -689,6 +689,9 @@
       "description": "订单",
       "type": "object",
       "properties": {
+        "apply_status": {
+          "$ref": "#/definitions/ApplyStatus"
+        },
         "body": {
           "type": "string",
           "x-go-name": "Body"
@@ -776,6 +779,12 @@
           "type": "number",
           "format": "double",
           "x-go-name": "Price"
+        },
+        "refund_amount": {
+          "description": "退款金额",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "RefundAmount"
         },
         "status": {
           "$ref": "#/definitions/OrderStatus"
@@ -1129,6 +1138,12 @@
           "format": "int64",
           "x-go-name": "Created"
         },
+        "freight": {
+          "description": "运费",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Freight"
+        },
         "id": {
           "type": "integer",
           "format": "int64",
@@ -1268,6 +1283,12 @@
             "type": "number",
             "format": "double",
             "x-go-name": "Freight"
+          },
+          "price": {
+            "description": "商品价格",
+            "type": "number",
+            "format": "double",
+            "x-go-name": "Price"
           }
         }
       }

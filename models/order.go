@@ -16,8 +16,6 @@ type OrderStatus int
 const (
 	OrderStatusWaiting OrderStatus = iota + 1
 	OrderStatusSuccess
-	OrderStatusDelivering
-	OrderStatusDeliveried
 )
 
 // 发货状态
@@ -61,6 +59,10 @@ type Order struct {
 	Status OrderStatus `json:"status"`
 	// 发货状态
 	DeliveryStatus DeliveryStatus `json:"delivery_status"`
+	// 申请取消状态
+	ApplyStatus ApplyStatus `json:"apply_status"`
+	// 退款金额
+	RefundAmount float64 `json:"refund_amount"`
 	// 创建时间
 	Created int64 `json:"created"`
 	// 支付截止时间

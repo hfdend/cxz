@@ -105,7 +105,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 		products       []*models.OrderProduct
 	)
 
-	if price, freight, body, products, err = Order.GetOrderProducts(o.OrderID, info); err != nil {
+	if price, freight, body, products, err = Order.GetOrderProducts(o.OrderID, info, weekNumber); err != nil {
 		return
 	}
 	o.Body = body
@@ -125,6 +125,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 	o.OrderAddress.DistrictName = address.DistrictName
 	o.OrderAddress.DetailAddress = address.DetailAddress
 	o.OrderProducts = products
+	o.ApplyStatus = models.ApplyStatusNil
 	db := cli.DB.Begin()
 	defer func() {
 		if err == nil {
@@ -224,6 +225,12 @@ func (order) WXAPay(orderID string, user *models.User, ip string) (wxaRequest *w
 		return
 	} else if order == nil {
 		err = errors.New("订单不存在")
+		return
+	} else if order.Status != models.OrderStatusWaiting {
+		err = errors.New("请勿重复支付")
+		return
+	} else if order.ApplyStatus != models.ApplyStatusNil {
+		err = errors.New("订单正在取消中")
 		return
 	}
 	var c wxpay.PayConfig
