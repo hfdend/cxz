@@ -45,7 +45,7 @@ func (product) GetByID(c *gin.Context) {
 
 func (product) Save(c *gin.Context) {
 	var args models.Product
-	if c.Bind(&args) != nil {
+	if err := c.Bind(&args); err != nil {
 		return
 	}
 	var product *models.Product
@@ -71,6 +71,11 @@ func (product) Save(c *gin.Context) {
 	product.Image = args.Image
 	product.Mark = args.Mark
 	product.Intro = args.Intro
+	product.IsPlan = args.IsPlan
+	product.MinAge = args.MinAge
+	product.MaxAge = args.MaxAge
+	product.MinWeight = args.MinWeight
+	product.MaxWeight = args.MaxWeight
 	if err = product.Save(); err != nil {
 		JSON(c, err)
 	} else {

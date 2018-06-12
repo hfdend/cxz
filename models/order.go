@@ -22,7 +22,7 @@ const (
 // swagger:model DeliveryStatus
 // 1: 等待发货
 // 2: 部分周期发货
-// 2: 发货完成
+// 3: 发货完成
 type DeliveryStatus int
 
 const (

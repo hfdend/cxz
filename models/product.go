@@ -14,10 +14,20 @@ import (
 type Product struct {
 	Model
 	Name string `json:"name"`
+	// 是否是月够商品
+	IsPlan Sure `json:"is_plan"`
 	// 类型
 	Type string `json:"type"`
 	// 味道
 	Taste string `json:"taste"`
+	// 最小体重
+	MinWeight int `json:"min_weight"`
+	// 最大体重
+	MaxWeight int `json:"max_weight"`
+	// 最小年龄
+	MinAge int `json:"min_age"`
+	// 最大年龄
+	MaxAge int `json:"max_age"`
 	// 商品规格
 	Unit string `json:"unit"`
 	// 售价
@@ -44,6 +54,16 @@ type ProductCondition struct {
 	Type string `json:"type" form:"type"`
 	// 口味
 	Taste string `json:"taste" form:"taste"`
+	// 是否是月够商品
+	IsPlan Sure `json:"is_plan"`
+	// 最小体重
+	MinWeight int `json:"min_weight"`
+	// 最大体重
+	MaxWeight int `json:"max_weight"`
+	// 最小年龄
+	MinAge int `json:"min_age"`
+	// 最大年龄
+	MaxAge int `json:"max_age"`
 }
 
 var ProductDefault Product
@@ -87,6 +107,21 @@ func (Product) GetList(cond ProductCondition, pager *Pager) (list []*Product, er
 	}
 	if cond.Taste != "" {
 		db = db.Where("taste = ?", cond.Taste)
+	}
+	if cond.IsPlan != SureNil {
+		db = db.Where("is_plan = ?", cond.IsPlan)
+	}
+	if cond.MinWeight != 0 {
+		db = db.Where("max_weight >= ?", cond.MinWeight)
+	}
+	if cond.MaxWeight != 0 {
+		db = db.Where("min_weight <= ?", cond.MaxWeight)
+	}
+	if cond.MinAge != 0 {
+		db = db.Where("max_age >= ?", cond.MinAge)
+	}
+	if cond.MaxAge != 0 {
+		db = db.Where("min_age <= ?", cond.MaxAge)
 	}
 	if pager != nil {
 		if db, err = pager.Exec(db); err != nil {
