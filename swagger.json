@@ -450,6 +450,46 @@
           {
             "type": "integer",
             "format": "int64",
+            "x-go-name": "IsPlan",
+            "description": "是否是月够商品",
+            "name": "is_plan",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "MinWeight",
+            "description": "最小体重",
+            "name": "min_weight",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "MaxWeight",
+            "description": "最大体重",
+            "name": "max_weight",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "MinAge",
+            "description": "最小年龄",
+            "name": "min_age",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "MaxAge",
+            "description": "最大年龄",
+            "name": "max_age",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
             "x-go-name": "Page",
             "name": "page",
             "in": "query"
@@ -927,6 +967,15 @@
           "format": "int64",
           "x-go-name": "ID"
         },
+        "image": {
+          "description": "第一个商品的图片",
+          "type": "string",
+          "x-go-name": "Image"
+        },
+        "image_src": {
+          "type": "string",
+          "x-go-name": "ImageSrc"
+        },
         "item": {
           "description": "第几期",
           "type": "integer",
@@ -957,6 +1006,10 @@
         },
         "status": {
           "$ref": "#/definitions/PlanStatus"
+        },
+        "title": {
+          "type": "string",
+          "x-go-name": "Title"
         },
         "total_item": {
           "description": "总共几期",
@@ -1185,10 +1238,37 @@
         "is_del": {
           "$ref": "#/definitions/Sure"
         },
+        "is_plan": {
+          "$ref": "#/definitions/Sure"
+        },
         "mark": {
           "description": "备注",
           "type": "string",
           "x-go-name": "Mark"
+        },
+        "max_age": {
+          "description": "最大年龄",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "MaxAge"
+        },
+        "max_weight": {
+          "description": "最大体重",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "MaxWeight"
+        },
+        "min_age": {
+          "description": "最小年龄",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "MinAge"
+        },
+        "min_weight": {
+          "description": "最小体重",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "MinWeight"
         },
         "name": {
           "type": "string",

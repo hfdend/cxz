@@ -284,13 +284,24 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 		db.Rollback()
 		return err
 	}
+	products, err := models.OrderProductDefault.GetByOrderID(orderID)
+	if err != nil {
+		db.Rollback()
+		return err
+	}
 	y, m, d := time.Now().Date()
 	t := time.Date(y, m, d, 0, 0, 0, 0, time.Local)
+
 	// 添加发货计划
 	for i := 0; i < order.WeekNumber; i++ {
 		op := new(models.OrderPlan)
 		op.OrderID = order.OrderID
 		op.UserID = order.UserID
+		op.Title = order.Body
+		if len(products) > 0 {
+			op.Image = products[0].Image
+			op.SetImageSrc()
+		}
 		if order.Freight > 0 {
 			op.Freight = utils.Round(order.Freight/float64(order.WeekNumber), 2)
 		}

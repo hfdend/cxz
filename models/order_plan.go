@@ -1,9 +1,12 @@
 package models
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/hfdend/cxz/cli"
+	"github.com/hfdend/cxz/conf"
 	"github.com/jinzhu/gorm"
 )
 
@@ -37,6 +40,7 @@ type OrderPlan struct {
 	Model
 	OrderID string `json:"order_id"`
 	UserID  int    `json:"user_id"`
+	Title   string `json:"title"`
 	// 第几期
 	Item int `json:"item"`
 	// 金额
@@ -59,11 +63,15 @@ type OrderPlan struct {
 	Express string `json:"express"`
 	// 快递单号
 	WaybillNumber string `json:"waybill_number"`
+	// 第一个商品的图片
+	Image string `json:"image"`
 	// 取消申请时间
 	ApplyCancelTime int64 `json:"apply_cancel_time"`
 	// 确认取消时间
 	CanceledTime int64 `json:"canceled_time"`
 	Created      int64 `json:"created"`
+
+	ImageSrc string `json:"image_src" gorm:"-"`
 }
 
 var OrderPlanDefault OrderPlan
@@ -78,12 +86,22 @@ func (op *OrderPlan) Insert(db *gorm.DB) error {
 }
 
 func (OrderPlan) GetByOrderID(orderID string) (list []*OrderPlan, err error) {
-	err = cli.DB.Where("order_id = ?", orderID).Find(&list).Error
+	if err = cli.DB.Where("order_id = ?", orderID).Find(&list).Error; err != nil {
+		return
+	}
+	for _, v := range list {
+		v.SetImageSrc()
+	}
 	return
 }
 
 func (OrderPlan) GetByOrderIDForUpdate(db *gorm.DB, orderID string) (list []*OrderPlan, err error) {
-	err = db.Set("gorm:query_option", "FOR UPDATE").Where("order_id = ?", orderID).Find(&list).Error
+	if err = db.Set("gorm:query_option", "FOR UPDATE").Where("order_id = ?", orderID).Find(&list).Error; err != nil {
+		return
+	}
+	for _, v := range list {
+		v.SetImageSrc()
+	}
 	return
 }
 
@@ -96,11 +114,17 @@ func (OrderPlan) GetByOrderIDAndItemForUpdate(db *gorm.DB, orderID string, item 
 		}
 		return nil, err
 	}
+	data.SetImageSrc()
 	return &data, nil
 }
 
 func (OrderPlan) GetByOrderIDs(orderIDs []string) (list []*OrderPlan, err error) {
-	err = cli.DB.Where("order_id in (?)", orderIDs).Find(&list).Error
+	if err = cli.DB.Where("order_id in (?)", orderIDs).Find(&list).Error; err != nil {
+		return
+	}
+	for _, v := range list {
+		v.SetImageSrc()
+	}
 	return
 }
 
@@ -116,7 +140,12 @@ func (OrderPlan) HasNoDelivery(db *gorm.DB, orderID string) (bool, error) {
 }
 
 func (OrderPlan) GetByUserID(userID int) (list []*OrderPlan, err error) {
-	err = cli.DB.Where("user_id = ?", userID).Order("plan_time asc, id asc").Find(&list).Error
+	if err = cli.DB.Where("user_id = ?", userID).Order("plan_time asc, id asc").Find(&list).Error; err != nil {
+		return
+	}
+	for _, v := range list {
+		v.SetImageSrc()
+	}
 	return
 }
 
@@ -128,4 +157,13 @@ func (op *OrderPlan) Delivery(db *gorm.DB, express, waybillNumber string) error 
 		"status":         PlanStatusDeliveried,
 	}
 	return db.Model(op).Update(data).Error
+}
+
+func (op *OrderPlan) SetImageSrc() {
+	if op.Image == "" {
+		return
+	}
+	c := conf.Config.Aliyun.OSS
+	op.ImageSrc = fmt.Sprintf("%s/%s", strings.TrimRight(c.Domain, "/"), strings.TrimLeft(op.Image, "/"))
+	return
 }
