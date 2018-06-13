@@ -1,11 +1,13 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"strings"
 	"time"
 
+	"github.com/go-redis/redis"
 	"github.com/hfdend/cxz/cli"
 	"github.com/jinzhu/gorm"
 )
@@ -84,4 +86,38 @@ func DBInsertIgnore(dbq *gorm.DB, obj interface{}) (int64, error) {
 		return 0, err
 	}
 	return id, nil
+}
+
+func TransactionOver(db *gorm.DB, err error) {
+	if db == nil {
+		cli.Logger.Error("TransactionOver db is nil")
+		return
+	}
+	if err != nil {
+		db.Rollback()
+	} else {
+		db.Commit()
+	}
+}
+
+func GetByRedis(c *redis.Client, key string, expiration time.Duration, out interface{}, handler func() ([]byte, error), refreshCaches ...bool) error {
+	var refreshCache bool
+	if len(refreshCaches) > 0 {
+		refreshCache = refreshCaches[0]
+	}
+	data, err := c.Get(key).Bytes()
+	if err == redis.Nil || refreshCache {
+		if data, err = handler(); err != nil {
+			return err
+		} else if len(data) == 0 {
+			return nil
+		}
+		// 保存缓存
+		if err := c.Set(key, data, expiration).Err(); err != nil {
+			return err
+		}
+	} else if err != nil {
+		return err
+	}
+	return json.Unmarshal(data, out)
 }

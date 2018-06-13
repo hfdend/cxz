@@ -51,6 +51,9 @@ var Config struct {
 			AccessKeySecret string `yaml:"access_key_secret"`
 			Bucket          string `yaml:"bucket"`
 		} `yaml:"oss"`
+		Express struct {
+			AppCode string `yaml:"app_code"`
+		} `yaml:"express"`
 	} `yaml:"aliyun"`
 	MiniProgram struct {
 		AppID  string `yaml:"appid"`
