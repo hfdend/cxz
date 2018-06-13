@@ -425,6 +425,24 @@
         }
       }
     },
+    "/product/detail": {
+      "get": {
+        "description": "商品详情",
+        "tags": [
+          "商品"
+        ],
+        "operationId": "Product_GetByID",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID",
+            "name": "id",
+            "in": "query"
+          }
+        ]
+      }
+    },
     "/product/list": {
       "get": {
         "description": "获取商品列表",
@@ -1500,6 +1518,12 @@
         "items": {
           "$ref": "#/definitions/AttributeItem"
         }
+      }
+    },
+    "ProductGetByIDResp": {
+      "description": "商品详情",
+      "schema": {
+        "$ref": "#/definitions/Product"
       }
     },
     "ProductGetListResp": {

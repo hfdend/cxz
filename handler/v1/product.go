@@ -45,6 +45,36 @@ func (product) GetList(c *gin.Context) {
 	}
 }
 
+// swagger:parameters Product_GetByID
+type ProductGetByIDArgs struct {
+	ID int `json:"id" form:"id"`
+}
+
+// 商品详情
+// swagger:response ProductGetByIDResp
+type ProductGetByIDResp struct {
+	// in: body
+	Body *models.Product
+}
+
+// swagger:route GET /product/detail 商品 Product_GetByID
+// 商品详情
+// swagger:parameters:
+//     200: ProductGetByIDResp
+func (product) GetByID(c *gin.Context) {
+	var args ProductGetByIDArgs
+	var resp ProductGetByIDResp
+	var err error
+	if c.Bind(&args) != nil {
+		return
+	}
+	if resp.Body, err = models.ProductDefault.GetByID(args.ID); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, resp.Body)
+	}
+}
+
 // 商品分类和属性
 // swagger:response ProductAttributeItemsResp
 type ProductAttributeItemsResp struct {
