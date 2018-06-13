@@ -55,15 +55,15 @@ type ProductCondition struct {
 	// 口味
 	Taste string `json:"taste" form:"taste"`
 	// 是否是月够商品
-	IsPlan Sure `json:"is_plan"`
+	IsPlan Sure `json:"is_plan" form:"is_plan"`
 	// 最小体重
-	MinWeight int `json:"min_weight"`
+	MinWeight int `json:"min_weight" form:"min_weight"`
 	// 最大体重
-	MaxWeight int `json:"max_weight"`
+	MaxWeight int `json:"max_weight" form:"max_weight"`
 	// 最小年龄
-	MinAge int `json:"min_age"`
+	MinAge int `json:"min_age" form:"min_age"`
 	// 最大年龄
-	MaxAge int `json:"max_age"`
+	MaxAge int `json:"max_age" form:"max_age"`
 }
 
 var ProductDefault Product
