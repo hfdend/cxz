@@ -22,6 +22,10 @@ type express int
 var Express express
 
 func (express) Query(number, company string) (data models.ExpressData, err error) {
+	if number == "" {
+		err = errors.New("没有快递单号")
+		return
+	}
 	key := fmt.Sprintf("express_cache_%s_%s", number, company)
 	err = models.GetByRedis(cli.Redis, key, time.Hour, &data, func() (dataRaw []byte, err error) {
 		var data models.ExpressData

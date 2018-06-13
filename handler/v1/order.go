@@ -209,3 +209,36 @@ func (order) WXAPayment(c *gin.Context) {
 		JSON(c, resp.Body)
 	}
 }
+
+// swagger:parameters Order_QueryExpress
+type OrderQueryExpressArgs struct {
+	// 物流单号
+	Number string `json:"number" form:"number"`
+	// 快递公司
+	Company string `json:"company" form:"company"`
+}
+
+// 物流信息
+// swagger:response OrderQueryExpressResp
+type OrderQueryExpressResp struct {
+	// in: body
+	Body models.ExpressData
+}
+
+// swagger:route /order/query/express Order_QueryExpress
+// 查询物流单号
+// responses:
+//     200: OrderQueryExpressResp
+func (order) QueryExpress(c *gin.Context) {
+	var args OrderQueryExpressArgs
+	var resp OrderQueryExpressResp
+	var err error
+	if c.Bind(&args) != nil {
+		return
+	}
+	if resp.Body, err = modules.Express.Query(args.Number, args.Company); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, resp.Body)
+	}
+}
