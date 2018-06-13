@@ -21,13 +21,14 @@ var DB *gorm.DB
 func InitMysql() {
 	mysqlConfig := conf.Config.Mysql
 	sourceName := (&mysql.Config{
-		User:   mysqlConfig.User,
-		Passwd: mysqlConfig.Password,
-		Addr:   fmt.Sprintf("%s:%d", mysqlConfig.Host, mysqlConfig.Port),
-		Net:    "tcp",
+		AllowNativePasswords: true,
+		User:                 mysqlConfig.User,
+		Passwd:               mysqlConfig.Password,
+		Addr:                 fmt.Sprintf("%s:%d", mysqlConfig.Host, mysqlConfig.Port),
+		Net:                  "tcp",
 		Params: map[string]string{
-			"charset": "utf8",
-			"loc":     "Local",
+			//"charset": "utf8",
+			"loc": "Local",
 		},
 		DBName:  mysqlConfig.DB,
 		Timeout: mysqlConfig.Timeout,
