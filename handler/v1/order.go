@@ -225,7 +225,7 @@ type OrderQueryExpressResp struct {
 	Body models.ExpressData
 }
 
-// swagger:route /order/query/express Order_QueryExpress
+// swagger:route /order/query/express 订单 Order_QueryExpress
 // 查询物流单号
 // responses:
 //     200: OrderQueryExpressResp
@@ -254,7 +254,7 @@ type OrderPlanDelayArgs struct {
 	}
 }
 
-// swagger:route POST /order/plan/delay Order_PlanDelay
+// swagger:route POST /order/plan/delay 订单 Order_PlanDelay
 // 发货计划推迟
 // responses:
 //     200: SUCCESS

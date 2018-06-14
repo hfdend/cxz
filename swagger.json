@@ -335,6 +335,45 @@
         }
       }
     },
+    "/order/plan/delay": {
+      "post": {
+        "description": "发货计划推迟",
+        "tags": [
+          "订单"
+        ],
+        "operationId": "Order_PlanDelay",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "day": {
+                  "description": "日期，格式20180301",
+                  "type": "string",
+                  "x-go-name": "Day"
+                },
+                "item": {
+                  "type": "integer",
+                  "format": "int64",
+                  "x-go-name": "Item"
+                },
+                "order_id": {
+                  "type": "string",
+                  "x-go-name": "OrderID"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SUCCESS"
+          }
+        }
+      }
+    },
     "/order/plans": {
       "get": {
         "description": "获取订单订阅",
@@ -1091,6 +1130,11 @@
           "type": "integer",
           "format": "int64",
           "x-go-name": "TotalItem"
+        },
+        "updated": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Updated"
         },
         "user_id": {
           "type": "integer",
