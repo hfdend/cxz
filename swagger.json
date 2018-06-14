@@ -1541,7 +1541,15 @@
     "OrderQueryExpressResp": {
       "description": "物流信息",
       "schema": {
-        "$ref": "#/definitions/ExpressData"
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/definitions/OrderAddress"
+          },
+          "express_data": {
+            "$ref": "#/definitions/ExpressData"
+          }
+        }
       }
     },
     "OrderWXAPaymentResp": {

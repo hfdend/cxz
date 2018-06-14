@@ -212,6 +212,8 @@ func (order) WXAPayment(c *gin.Context) {
 
 // swagger:parameters Order_QueryExpress
 type OrderQueryExpressArgs struct {
+	// 订单ID
+	OrderID string `json:"order_id" form:"order_id"`
 	// 物流单号
 	Number string `json:"number" form:"number"`
 	// 快递公司
@@ -222,7 +224,10 @@ type OrderQueryExpressArgs struct {
 // swagger:response OrderQueryExpressResp
 type OrderQueryExpressResp struct {
 	// in: body
-	Body models.ExpressData
+	Body struct {
+		ExpressData models.ExpressData   `json:"express_data"`
+		Address     *models.OrderAddress `json:"address"`
+	}
 }
 
 // swagger:route /order/query/express 订单 Order_QueryExpress
@@ -236,11 +241,15 @@ func (order) QueryExpress(c *gin.Context) {
 	if c.Bind(&args) != nil {
 		return
 	}
-	if resp.Body, err = modules.Express.Query(args.Number, args.Company); err != nil {
+	if resp.Body.ExpressData, err = modules.Express.Query(args.Number, args.Company); err != nil {
 		JSON(c, err)
-	} else {
-		JSON(c, resp.Body)
+		return
 	}
+	if resp.Body.Address, err = models.OrderAddressDefault.GetByOrderID(args.OrderID); err != nil {
+		JSON(c, err)
+		return
+	}
+	JSON(c, resp.Body)
 }
 
 // swagger:parameters Order_PlanDelay
