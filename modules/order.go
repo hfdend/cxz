@@ -316,6 +316,7 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 			op.PlanTime = t.Add(time.Duration(i+1) * 24 * 7 * time.Hour).Unix()
 		}
 		op.Status = models.PlanStatusWaiting
+		op.ApplyStatus = models.ApplyStatusNil
 		if err = op.Insert(db); err != nil {
 			db.Rollback()
 			return err
