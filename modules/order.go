@@ -310,7 +310,11 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 		}
 		op.Item = i + 1
 		op.TotalItem = order.WeekNumber
-		op.PlanTime = t.Add(time.Duration(i+1) * 24 * 7 * time.Hour).Unix()
+		if i == 0 {
+			op.PlanTime = t.Add(24 * 7 * time.Hour).Unix()
+		} else {
+			op.PlanTime = t.Add(time.Duration(i+1) * 24 * 7 * time.Hour).Unix()
+		}
 		op.Status = models.PlanStatusWaiting
 		if err = op.Insert(db); err != nil {
 			db.Rollback()
