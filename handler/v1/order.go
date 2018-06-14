@@ -242,3 +242,31 @@ func (order) QueryExpress(c *gin.Context) {
 		JSON(c, resp.Body)
 	}
 }
+
+// swagger:parameters Order_PlanDelay
+type OrderPlanDelayArgs struct {
+	// in: body
+	Body struct {
+		OrderID string `json:"order_id"`
+		Item    int    `json:"item"`
+		// 日期，格式20180301
+		Day string `json:"day"`
+	}
+}
+
+// swagger:route POST /order/plan/delay Order_PlanDelay
+// 发货计划推迟
+// responses:
+//     200: SUCCESS
+func (order) PlanDelay(c *gin.Context) {
+	var args OrderPlanDelayArgs
+	if c.Bind(&args.Body) != nil {
+		return
+	}
+	user := GetUser(c)
+	if err := modules.Order.PlanDelay(user.ID, args.Body.OrderID, args.Body.Item, args.Body.Day); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, SUCCESS)
+	}
+}

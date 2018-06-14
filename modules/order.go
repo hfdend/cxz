@@ -383,3 +383,48 @@ func (order) Delivery(orderID string, item int, express, waybillNumber string) e
 	db.Commit()
 	return nil
 }
+
+func (order) PlanDelay(userID int, orderID string, item int, day string) error {
+	t, err := time.ParseInLocation("20060102", day, time.Local)
+	if err != nil {
+		return errors.New("时间格式错误")
+	}
+	db := cli.DB.Begin()
+	plans, err := models.OrderPlanDefault.GetByOrderIDAndUserIDForUpdate(db, orderID, userID)
+	if err != nil {
+		db.Rollback()
+		return err
+	}
+	if len(plans) == 0 {
+		db.Rollback()
+		return nil
+	}
+	var delayIDs []int
+	var diff int64
+	for _, v := range plans {
+		if v.Item == item {
+			if v.Status != models.PlanStatusWaiting {
+				db.Rollback()
+				return errors.New("已发货不能延期")
+			}
+			if v.ApplyStatus != models.ApplyStatusNil {
+				db.Rollback()
+				return errors.New("不能延期")
+			}
+			if v.PlanTime == t.Unix() {
+				db.Rollback()
+				return nil
+			}
+			diff = t.Unix() - v.PlanTime
+			delayIDs = append(delayIDs, v.ID)
+		} else if v.Item > item && v.Status == models.PlanStatusWaiting && v.ApplyStatus == models.ApplyStatusNil {
+			delayIDs = append(delayIDs, v.ID)
+		}
+	}
+	// 数据更改
+	if err := models.OrderPlanDefault.Delay(db, delayIDs, diff); err != nil {
+		db.Rollback()
+		return err
+	}
+	return nil
+}

@@ -63,6 +63,7 @@ func route(engine *gin.Engine) {
 		g.POST("order/wxapayment", MustLogin, v1.Order.WXAPayment)
 		g.GET("order/plans", MustLogin, v1.Order.GetOrderPlanList)
 		g.GET("order/query/express", MustLogin, v1.Order.QueryExpress)
+		g.POST("order/plan/delay", MustLogin, v1.Order.PlanDelay)
 	}
 	{
 		var MustLogin = api.Passport.MustLogin

@@ -26,14 +26,12 @@ const (
 // 1: 未申请
 // 2: 申请取消
 // 3: 取消成功
-// 4: 取消拒绝
 type ApplyStatus int
 
 const (
 	ApplyStatusNil ApplyStatus = iota + 1
 	ApplyStatusWaiting
 	ApplyStatusSuccess
-	ApplyStatusCancel
 )
 
 type OrderPlan struct {
@@ -70,6 +68,7 @@ type OrderPlan struct {
 	// 确认取消时间
 	CanceledTime int64 `json:"canceled_time"`
 	Created      int64 `json:"created"`
+	Updated      int64 `json:"updated"`
 
 	ImageSrc string `json:"image_src" gorm:"-"`
 }
@@ -82,6 +81,7 @@ func (OrderPlan) TableName() string {
 
 func (op *OrderPlan) Insert(db *gorm.DB) error {
 	op.Created = time.Now().Unix()
+	op.Updated = time.Now().Unix()
 	return db.Create(op).Error
 }
 
@@ -103,6 +103,24 @@ func (OrderPlan) GetByOrderIDForUpdate(db *gorm.DB, orderID string) (list []*Ord
 		v.SetImageSrc()
 	}
 	return
+}
+
+func (OrderPlan) GetByOrderIDAndUserIDForUpdate(db *gorm.DB, orderID string, userID int) (list []*OrderPlan, err error) {
+	if err = db.Set("gorm:query_option", "FOR UPDATE").Where("order_id = ? and user_id = ?", orderID, userID).Find(&list).Error; err != nil {
+		return
+	}
+	for _, v := range list {
+		v.SetImageSrc()
+	}
+	return
+}
+
+func (OrderPlan) Delay(db *gorm.DB, ids []int, diff int64) error {
+	data := map[string]interface{}{
+		"plan_time": gorm.Expr("plan_time + ?", diff),
+		"updated":   time.Now().Unix(),
+	}
+	return db.Model(OrderPlan{}).Update(data).Error
 }
 
 func (OrderPlan) GetByOrderIDAndItemForUpdate(db *gorm.DB, orderID string, item int) (*OrderPlan, error) {
@@ -154,6 +172,7 @@ func (op *OrderPlan) Delivery(db *gorm.DB, express, waybillNumber string) error 
 		"express":        express,
 		"waybill_number": waybillNumber,
 		"delivery_time":  time.Now().Unix(),
+		"updated":        time.Now().Unix(),
 		"status":         PlanStatusDeliveried,
 	}
 	return db.Model(op).Update(data).Error
