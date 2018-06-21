@@ -9,6 +9,7 @@ type banner int
 
 var Banner banner
 
+// swagger:parameters Banner_GetList
 type BannerGetListArgs struct {
 	// 某一个位置的Banner
 	// 不传查询全部
