@@ -51,6 +51,10 @@ var Config struct {
 			AccessKeySecret string `yaml:"access_key_secret"`
 			Bucket          string `yaml:"bucket"`
 		} `yaml:"oss"`
+		SMS struct {
+			AccessKeyID     string `yaml:"access_key_id"`
+			AccessKeySecret string `yaml:"access_key_secret"`
+		} `yaml:"sms"`
 		Express struct {
 			AppCode string `yaml:"app_code"`
 		} `yaml:"express"`
