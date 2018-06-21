@@ -7,7 +7,7 @@ import (
 
 type banner int
 
-type BannerDefault banner
+var Banner banner
 
 func (banner) GetByID(c *gin.Context) {
 	var args struct {
@@ -24,7 +24,7 @@ func (banner) GetByID(c *gin.Context) {
 }
 
 func (banner) GetList(c *gin.Context) {
-	if list, err := models.BannerDefault.GetList(0); err != nil {
+	if list, err := models.BannerDefault.GetList(""); err != nil {
 		JSON(c, err)
 	} else {
 		JSON(c, list)
@@ -62,6 +62,9 @@ func (banner) Save(c *gin.Context) {
 func (banner) Del(c *gin.Context) {
 	var args struct {
 		ID int `json:"id"`
+	}
+	if c.Bind(&args) != nil {
+		return
 	}
 	if err := models.BannerDefault.DelByID(args.ID); err != nil {
 		JSON(c, err)

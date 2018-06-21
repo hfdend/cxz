@@ -64,6 +64,8 @@ func route(engine *gin.Engine) {
 		g.GET("order/plans", MustLogin, v1.Order.GetOrderPlanList)
 		g.GET("order/query/express", MustLogin, v1.Order.QueryExpress)
 		g.POST("order/plan/delay", MustLogin, v1.Order.PlanDelay)
+
+		g.GET("banner/list", v1.Banner.GetList)
 	}
 	{
 		var MustLogin = api.Passport.MustLogin
@@ -93,6 +95,12 @@ func route(engine *gin.Engine) {
 			g.GET("order/list", MustLogin(), api.Order.GetList)
 			g.GET("order/detail", MustLogin(), api.Order.GetByOrderID)
 			g.POST("order/delivery", MustLogin(), api.Order.Delivery)
+		}
+		{
+			g.GET("banner/detail", MustLogin(), api.Banner.GetByID)
+			g.GET("banner/list", MustLogin(), api.Banner.GetList)
+			g.POST("banner/save", MustLogin(), api.Banner.Save)
+			g.POST("banner/delete", MustLogin(), api.Banner.Del)
 		}
 	}
 }

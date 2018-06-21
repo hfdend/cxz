@@ -10,24 +10,18 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type BannerPosition int
-
-const (
-	BannerPositionAll BannerPosition = iota
-)
-
 type Banner struct {
 	Model
-	Title    string         `json:"title"`
-	Position BannerPosition `json:"position"`
-	Link     string         `json:"link"`
-	Image    string         `json:"image"`
-	IsDel    Sure           `json:"is_del"`
-	Sort     int            `json:"sort"`
-	Created  int64          `json:"created"`
-	Updated  int64          `json:"updated"`
-	DelTime  int64          `json:"del_time"`
-	ImageSrc string         `json:"image_src" gorm:"-"`
+	Title    string `json:"title"`
+	Position string `json:"position"`
+	Link     string `json:"link"`
+	Image    string `json:"image"`
+	IsDel    Sure   `json:"is_del"`
+	Sort     int    `json:"sort"`
+	Created  int64  `json:"created"`
+	Updated  int64  `json:"updated"`
+	DelTime  int64  `json:"del_time"`
+	ImageSrc string `json:"image_src" gorm:"-"`
 }
 
 var BannerDefault Banner
@@ -41,14 +35,19 @@ func (bn *Banner) Save() error {
 		bn.Created = time.Now().Unix()
 	}
 	bn.Updated = time.Now().Unix()
-	return cli.DB.Save(bn).Error
+	if err := cli.DB.Save(bn).Error; err != nil {
+		return err
+	}
+	bn.SetImageSrc()
+	return nil
 }
 
-func (Banner) GetList(pos int) (list []*Banner, err error) {
+func (Banner) GetList(pos string) (list []*Banner, err error) {
 	db := cli.DB.Model(Banner{})
-	if pos != 0 {
-		db = db.Where("position = ? and is_del = ?", pos, SureNo)
+	if pos != "" {
+		db = db.Where("position like ?", fmt.Sprintf("%%,%s,%%", pos))
 	}
+	db = db.Where("is_del = ?", SureNo)
 	if err = db.Order("sort desc").Find(&list).Error; err != nil {
 		return
 	}

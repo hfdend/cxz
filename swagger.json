@@ -138,6 +138,20 @@
         }
       }
     },
+    "/banner/list": {
+      "get": {
+        "description": "获取Banner列表",
+        "tags": [
+          "Banner"
+        ],
+        "operationId": "Banner_GetList",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/BannerGetListResp"
+          }
+        }
+      }
+    },
     "/bind/phone": {
       "post": {
         "description": "绑定手机号",
@@ -726,6 +740,60 @@
           "type": "integer",
           "format": "int64",
           "x-go-name": "Sort"
+        }
+      },
+      "x-go-package": "github.com/hfdend/cxz/models"
+    },
+    "Banner": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Created"
+        },
+        "del_time": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "DelTime"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "image": {
+          "type": "string",
+          "x-go-name": "Image"
+        },
+        "image_src": {
+          "type": "string",
+          "x-go-name": "ImageSrc"
+        },
+        "is_del": {
+          "$ref": "#/definitions/Sure"
+        },
+        "link": {
+          "type": "string",
+          "x-go-name": "Link"
+        },
+        "position": {
+          "type": "string",
+          "x-go-name": "Position"
+        },
+        "sort": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Sort"
+        },
+        "title": {
+          "type": "string",
+          "x-go-name": "Title"
+        },
+        "updated": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Updated"
         }
       },
       "x-go-package": "github.com/hfdend/cxz/models"
@@ -1468,6 +1536,15 @@
       "description": "地址数据",
       "schema": {
         "$ref": "#/definitions/Address"
+      }
+    },
+    "BannerGetListResp": {
+      "description": "Banner列表",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Banner"
+        }
       }
     },
     "DistrictGetGradationResp": {
