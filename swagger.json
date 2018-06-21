@@ -145,6 +145,15 @@
           "Banner"
         ],
         "operationId": "Banner_GetList",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "Position",
+            "description": "某一个位置的Banner\n不传查询全部\n1 按月订购-狗\n2 按月订购-猫\n3 自主拼选-狗\n4 自主拼选-猫",
+            "name": "position",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "$ref": "#/responses/BannerGetListResp"
