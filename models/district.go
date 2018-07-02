@@ -36,7 +36,7 @@ func (d District) once() error {
 	var err error
 	districtOnce.Do(func() {
 		var list []*District
-		if err = d.DB().Find(&list).Error; err != nil {
+		if err = d.DB().Where("is_show = ?", 1).Find(&list).Error; err != nil {
 			return
 		}
 		for _, v := range list {

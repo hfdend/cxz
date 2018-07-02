@@ -102,5 +102,10 @@ func route(engine *gin.Engine) {
 			g.POST("banner/save", MustLogin(), api.Banner.Save)
 			g.POST("banner/delete", MustLogin(), api.Banner.Del)
 		}
+		{
+			g.GET("district/list", MustLogin(), api.District.GetGradation)
+			g.GET("freight/list", MustLogin(), api.Freight.GetList)
+			g.POST("freight/save", MustLogin(), api.Freight.SaveAll)
+		}
 	}
 }

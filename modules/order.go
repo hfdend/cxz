@@ -23,8 +23,8 @@ type OrderProductInfo struct {
 	Number    int `json:"number"`
 }
 
-func (order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNumber int) (price, freight float64, body string, products []*models.OrderProduct, err error) {
-	var maxFreight float64
+func (o order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNumber, addressID int) (price, freight float64, body string, products []*models.OrderProduct, err error) {
+	var phasePrice float64
 	for _, v := range info {
 		if v.Number <= 0 {
 			err = errors.New("数量错误")
@@ -39,9 +39,6 @@ func (order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNumbe
 		} else if product.Price < 0 {
 			err = errors.New("商品金额错误")
 			return
-		}
-		if product.Freight > maxFreight {
-			maxFreight = product.Freight
 		}
 		body += fmt.Sprintf(",%s", product.Name)
 		orderProduct := new(models.OrderProduct)
@@ -59,16 +56,53 @@ func (order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNumbe
 		orderProduct.Mark = product.Mark
 		orderProduct.Intro = product.Intro
 		products = append(products, orderProduct)
-		price += orderProduct.IPrice
+		phasePrice += orderProduct.IPrice
 	}
 	body = strings.TrimLeft(body, ",")
 	bodyRune := []rune(body)
 	if len(bodyRune) > 32 {
 		body = string(bodyRune[0:32])
 	}
-	freight = utils.Round(maxFreight*float64(weekNumber), 2)
-	price = utils.Round(price*float64(weekNumber), 2)
+	var oneFreight float64
+	if oneFreight, err = o.GetFreight(phasePrice, weekNumber, addressID); err != nil {
+		return
+	}
+	freight = utils.Round(oneFreight*float64(weekNumber), 2)
+	price = utils.Round(phasePrice*float64(weekNumber), 2)
 	return
+}
+
+// A GetFreight 获取运费
+// phasePrice 单期金额
+// weekNumber 期数
+func (order) GetFreight(phasePrice float64, weekNumber, addressID int) (float64, error) {
+	address, err := models.AddressDefault.GetByID(addressID)
+	if err != nil {
+		return 0, err
+	}
+	var code string
+	if len(address.DistrictCode) > 2 {
+		code = address.DistrictCode[0:2]
+	}
+	fre, err := models.FreightDefault.GetByCode(code)
+	if err != nil {
+		return 0, err
+	} else if fre == nil {
+		return 0, errors.New("该地区暂不支持配送")
+	} else if fre.PhaseFree == -1 && fre.OrderFree == -1 {
+		return 0, errors.New("该地区暂不支持配送")
+	}
+	if fre.PhaseFree != -1 {
+		if phasePrice >= fre.PhaseFree {
+			return 0, nil
+		}
+	}
+	if fre.OrderFree != -1 {
+		if utils.Round(phasePrice*float64(weekNumber), 2) >= fre.OrderFree {
+			return 0, nil
+		}
+	}
+	return fre.Amount, nil
 }
 
 func (order) Build(userID, addressID int, info []OrderProductInfo, notice string, weekNumber int) (o *models.Order, err error) {
@@ -104,7 +138,7 @@ func (order) Build(userID, addressID int, info []OrderProductInfo, notice string
 		products       []*models.OrderProduct
 	)
 
-	if price, freight, body, products, err = Order.GetOrderProducts(o.OrderID, info, weekNumber); err != nil {
+	if price, freight, body, products, err = Order.GetOrderProducts(o.OrderID, info, weekNumber, addressID); err != nil {
 		return
 	}
 	o.Body = body

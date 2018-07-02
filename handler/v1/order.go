@@ -37,6 +37,8 @@ type OrderGetFreightArgs struct {
 	Body struct {
 		ProductInfo []modules.OrderProductInfo `json:"product_info"`
 		WeekNumber  int                        `json:"week_number"`
+		// 地址ID
+		AddressID int `json:"address_id"`
 	}
 }
 
@@ -62,7 +64,7 @@ func (order) GetFreight(c *gin.Context) {
 	if c.Bind(&args.Body) != nil {
 		return
 	}
-	if price, freight, _, _, err := modules.Order.GetOrderProducts("", args.Body.ProductInfo, args.Body.WeekNumber); err != nil {
+	if price, freight, _, _, err := modules.Order.GetOrderProducts("", args.Body.ProductInfo, args.Body.WeekNumber, args.Body.AddressID); err != nil {
 		JSON(c, err)
 	} else {
 		resp.Body.Freight = freight
