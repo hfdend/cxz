@@ -95,6 +95,7 @@ func route(engine *gin.Engine) {
 			g.GET("order/list", MustLogin(), api.Order.GetList)
 			g.GET("order/detail", MustLogin(), api.Order.GetByOrderID)
 			g.POST("order/delivery", MustLogin(), api.Order.Delivery)
+			g.GET("order/plan/list", MustLogin(), api.Order.GetNeedSendList)
 		}
 		{
 			g.GET("banner/detail", MustLogin(), api.Banner.GetByID)

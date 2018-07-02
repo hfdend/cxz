@@ -82,7 +82,7 @@ func (order) GetFreight(phasePrice float64, weekNumber, addressID int) (float64,
 	}
 	var code string
 	if len(address.DistrictCode) > 2 {
-		code = address.DistrictCode[0:2]
+		code = address.DistrictCode[0:2] + "0000"
 	}
 	fre, err := models.FreightDefault.GetByCode(code)
 	if err != nil {

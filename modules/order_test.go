@@ -38,11 +38,11 @@ func TestOrder_GetOrderProducts(t *testing.T) {
 	cli.Init()
 	info := []OrderProductInfo{
 		{
-			ProductID: 3,
+			ProductID: 6,
 			Number:    2,
 		},
 	}
-	price, freight, _, _, err := Order.GetOrderProducts("", info, 3)
+	price, freight, _, _, err := Order.GetOrderProducts("", info, 3, 5)
 	fmt.Println(err)
 	fmt.Println(price)
 	fmt.Println(freight)

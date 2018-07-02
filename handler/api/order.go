@@ -56,3 +56,19 @@ func (order) Delivery(c *gin.Context) {
 		JSON(c, "success")
 	}
 }
+
+func (order) GetNeedSendList(c *gin.Context) {
+	var args struct {
+		Page int `json:"page" form:"page"`
+	}
+	if c.Bind(&args) != nil {
+		return
+	}
+	pager := models.NewPager(args.Page, 20)
+	list, err := models.OrderPlanDefault.GetNeedSendList(pager)
+	if err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, list)
+	}
+}

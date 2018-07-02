@@ -85,6 +85,23 @@ func (op *OrderPlan) Insert(db *gorm.DB) error {
 	return db.Create(op).Error
 }
 
+// 按需要发货的期数获取期
+func (op *OrderPlan) GetNeedSendList(pager *Pager) (list []*OrderPlan, err error) {
+	db := cli.DB.Model(OrderPlan{})
+	db = db.Where("status = ? and apply_status = ?", PlanStatusWaiting, ApplyStatusNil).Order("plan_time asc")
+	if pager != nil {
+		if db, err = pager.Exec(db); err != nil {
+			return
+		} else if pager.Count == 0 {
+			return
+		}
+	}
+	if err = db.Find(&list).Error; err != nil {
+		return
+	}
+	return
+}
+
 func (OrderPlan) GetByOrderID(orderID string) (list []*OrderPlan, err error) {
 	if err = cli.DB.Where("order_id = ?", orderID).Find(&list).Error; err != nil {
 		return
