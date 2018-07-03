@@ -25,6 +25,7 @@ type OrderProductInfo struct {
 
 func (o order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNumber, addressID int) (price, freight float64, body string, products []*models.OrderProduct, err error) {
 	var phasePrice float64
+	var isPlan bool
 	for _, v := range info {
 		if v.Number <= 0 {
 			err = errors.New("数量错误")
@@ -39,6 +40,9 @@ func (o order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNum
 		} else if product.Price < 0 {
 			err = errors.New("商品金额错误")
 			return
+		}
+		if product.IsPlan == models.SureYes {
+			isPlan = true
 		}
 		body += fmt.Sprintf(",%s", product.Name)
 		orderProduct := new(models.OrderProduct)
@@ -64,7 +68,7 @@ func (o order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNum
 		body = string(bodyRune[0:32])
 	}
 	var oneFreight float64
-	if oneFreight, err = o.GetFreight(phasePrice, weekNumber, addressID); err != nil {
+	if oneFreight, err = o.GetFreight(phasePrice, weekNumber, addressID, isPlan); err != nil {
 		return
 	}
 	freight = utils.Round(oneFreight*float64(weekNumber), 2)
@@ -75,7 +79,7 @@ func (o order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNum
 // A GetFreight 获取运费
 // phasePrice 单期金额
 // weekNumber 期数
-func (order) GetFreight(phasePrice float64, weekNumber, addressID int) (float64, error) {
+func (order) GetFreight(phasePrice float64, weekNumber, addressID int, isPlan bool) (float64, error) {
 	address, err := models.AddressDefault.GetByID(addressID)
 	if err != nil {
 		return 0, err
@@ -92,17 +96,27 @@ func (order) GetFreight(phasePrice float64, weekNumber, addressID int) (float64,
 	} else if fre.PhaseFree == -1 && fre.OrderFree == -1 {
 		return 0, errors.New("该地区暂不支持配送")
 	}
-	if fre.PhaseFree != -1 {
-		if phasePrice >= fre.PhaseFree {
+	var amount, phaseFree, orderFree float64
+	if isPlan {
+		amount = fre.PlanAmount
+		phaseFree = fre.PlanPhaseFree
+		orderFree = fre.PlanOrderFree
+	} else {
+		amount = fre.Amount
+		phaseFree = fre.PhaseFree
+		orderFree = fre.OrderFree
+	}
+	if phaseFree != -1 {
+		if phasePrice >= phaseFree {
 			return 0, nil
 		}
 	}
-	if fre.OrderFree != -1 {
-		if utils.Round(phasePrice*float64(weekNumber), 2) >= fre.OrderFree {
+	if orderFree != -1 {
+		if utils.Round(phasePrice*float64(weekNumber), 2) >= orderFree {
 			return 0, nil
 		}
 	}
-	return fre.Amount, nil
+	return amount, nil
 }
 
 func (order) Build(userID, addressID int, info []OrderProductInfo, notice string, weekNumber int) (o *models.Order, err error) {
