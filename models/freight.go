@@ -14,13 +14,19 @@ type Freight struct {
 	// 地区code
 	Code string `json:"code"`
 	Name string `json:"name"`
-	// 单期运费
+	// 单期运费-自选
 	Amount float64 `json:"amount"`
-	// 订单免多少免运费(-1表示不设置此条件)
+	// 订单免多少免运费(-1表示不设置此条件)-自选
 	OrderFree float64 `json:"order_free"`
-	// 单期免多少免运费(-1表示不设置此条件)
+	// 单期免多少免运费(-1表示不设置此条件)-自选
 	PhaseFree float64 `json:"phase_free"`
-	Created   int64   `json:"created"`
+	// 单期运费-月够
+	PlanAmount float64 `json:"plan_amount"`
+	// 订单免多少免运费(-1表示不设置此条件)-月够
+	PlanOrderFree float64 `json:"plan_order_free"`
+	// 单期免多少免运费(-1表示不设置此条件)-月够
+	PlanPhaseFree float64 `json:"plan_phase_free"`
+	Created       int64   `json:"created"`
 }
 
 var FreightDefault Freight
