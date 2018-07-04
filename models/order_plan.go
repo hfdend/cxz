@@ -153,6 +153,26 @@ func (OrderPlan) GetByOrderIDAndItemForUpdate(db *gorm.DB, orderID string, item 
 	return &data, nil
 }
 
+func (OrderPlan) GetByOrderIDAndItemsForUpdate(db *gorm.DB, orderID string, items []int) (list []*OrderPlan, err error) {
+	err = db.Set("gorm:query_option", "FOR UPDATE").Where("order_id = ? and item in (?)", orderID, items).Find(&list).Error
+	if err != nil {
+		return
+	}
+	for _, v := range list {
+		v.SetImageSrc()
+	}
+	return
+}
+
+func (OrderPlan) CancelOrder(db *gorm.DB, ids []int) error {
+	data := map[string]interface{}{
+		"apply_status":  ApplyStatusSuccess,
+		"canceled_time": time.Now().Unix(),
+		"updated":       time.Now().Unix(),
+	}
+	return db.Model(OrderPlan{}).Where("id in (?)", ids).Update(data).Error
+}
+
 func (OrderPlan) GetByOrderIDs(orderIDs []string) (list []*OrderPlan, err error) {
 	if err = cli.DB.Where("order_id in (?)", orderIDs).Find(&list).Error; err != nil {
 		return

@@ -72,3 +72,20 @@ func (order) GetNeedSendList(c *gin.Context) {
 		JSON(c, list)
 	}
 }
+
+func (order) CancelOrder(c *gin.Context) {
+	var args struct {
+		OrderID      string  `json:"order_id"`
+		Items        []int   `json:"items"`
+		RefundAmount float64 `json:"refund_amount"`
+	}
+	if c.Bind(&args) != nil {
+		return
+	}
+	user := getUser(c)
+	if err := modules.Order.CancelOrder(user.ID, args.OrderID, args.Items, args.RefundAmount); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, "success")
+	}
+}

@@ -477,3 +477,42 @@ func (order) PlanDelay(userID int, orderID string, item int, day string) error {
 	}
 	return nil
 }
+
+// A CancelOrder 取消订单
+// planItems 取消的期数
+// returnAmount 退款金额
+func (order) CancelOrder(adminUserID int, orderID string, planItems []int, refundAmount float64) (err error) {
+	db := cli.DB.Begin()
+	var order *models.Order
+	if order, err = models.OrderDefault.GetByOrderIDForUpdate(db, orderID); err != nil {
+		db.Rollback()
+		return
+	} else if order == nil {
+		err = errors.New("订单不存在")
+		db.Rollback()
+		return
+	}
+	var planList []*models.OrderPlan
+	if planList, err = models.OrderPlanDefault.GetByOrderIDAndItemsForUpdate(db, orderID, planItems); err != nil {
+		db.Rollback()
+		return
+	} else if len(planList) != len(planItems) {
+		err = errors.New("期数不正确")
+		db.Rollback()
+		return
+	}
+	var planIDs []int
+	for _, v := range planList {
+		planIDs = append(planIDs, v.ID)
+	}
+	if err = order.CancelOrder(db, adminUserID, orderID, refundAmount); err != nil {
+		db.Rollback()
+		return
+	}
+	if err = models.OrderPlanDefault.CancelOrder(db, planIDs); err != nil {
+		db.Rollback()
+		return
+	}
+	db.Commit()
+	return nil
+}

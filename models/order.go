@@ -63,6 +63,8 @@ type Order struct {
 	ApplyStatus ApplyStatus `json:"apply_status"`
 	// 退款金额
 	RefundAmount float64 `json:"refund_amount"`
+	// 退款操作后台人员
+	RefundAdminUserID int `json:"-"`
 	// 创建时间
 	Created int64 `json:"created"`
 	// 支付截止时间
@@ -189,6 +191,16 @@ func (o *Order) UpdateDeliveryStatus(db *gorm.DB, deliveryStatus DeliveryStatus,
 		"update_time":     time.Now().Unix(),
 		"delivery_status": deliveryStatus,
 		"week_delivered":  item,
+	}
+	return db.Model(o).Update(data).Error
+}
+
+func (o Order) CancelOrder(db *gorm.DB, adminUserID int, orderID string, refundAmount float64) error {
+	data := map[string]interface{}{
+		"apply_status":         ApplyStatusSuccess,
+		"refund_amount":        refundAmount,
+		"update_time":          time.Now().Unix(),
+		"refund_admin_user_id": adminUserID,
 	}
 	return db.Model(o).Update(data).Error
 }
