@@ -94,6 +94,9 @@ func (address) List(c *gin.Context) {
 	if list, err := models.AddressDefault.GetList(user.ID); err != nil {
 		JSON(c, err)
 	} else {
+		if list == nil {
+			list = []*models.Address{}
+		}
 		JSON(c, list)
 	}
 }

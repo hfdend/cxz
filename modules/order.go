@@ -475,6 +475,7 @@ func (order) PlanDelay(userID int, orderID string, item int, day string) error {
 		db.Rollback()
 		return err
 	}
+	db.Commit()
 	return nil
 }
 
