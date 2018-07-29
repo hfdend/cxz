@@ -1,10 +1,10 @@
 package api
 
 import (
-	"gitee.com/cardctl/server/role"
 	"github.com/gin-gonic/gin"
 	"github.com/hfdend/cxz/models"
 	"github.com/hfdend/cxz/modules"
+	"github.com/hfdend/cxz/role"
 )
 
 type adminUser int
@@ -26,7 +26,7 @@ func (adminUser) GetUser(c *gin.Context) {
 	if c.Bind(&args) != nil {
 		return
 	}
-	if res, err := models.AdminUserDefault.GetById(args.Id); err != nil {
+	if res, err := models.AdminUserDefault.GetByID(args.Id); err != nil {
 		JSON(c, err)
 	} else {
 		JSON(c, res)
@@ -74,7 +74,22 @@ func (adminUser) GetGroupById(c *gin.Context) {
 	if c.Bind(&args) != nil {
 		return
 	}
-	if res, err := modules.AdminUser.GetGroupById(args.Id); err != nil {
+	if res, err := modules.AdminUser.GetGroupByID(args.Id); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, res)
+	}
+}
+
+func (adminUser) GetGroupByID(c *gin.Context) {
+	var args struct {
+		Id int
+	}
+	if err := c.Bind(&args); err != nil {
+		JSON(c, err)
+		return
+	}
+	if res, err := modules.AdminUser.GetGroupByID(args.Id); err != nil {
 		JSON(c, err)
 	} else {
 		JSON(c, res)

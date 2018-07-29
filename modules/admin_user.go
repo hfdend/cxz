@@ -1,8 +1,7 @@
 package modules
 
 import (
-	"errors"
-
+	"github.com/hfdend/cxz/errors"
 	"github.com/hfdend/cxz/models"
 	"github.com/hfdend/cxz/utils"
 )
@@ -49,7 +48,7 @@ func (adminUser) SaveUser(user *models.AdminUser) error {
 			return errors.New("请填写密码")
 		}
 	}
-	if g, err := models.AdminGroupDefault.GetById(user.GroupId); err != nil {
+	if g, err := models.AdminGroupDefault.GetByID(user.GroupID); err != nil {
 		return err
 	} else if g == nil {
 		return errors.New("用户组不存在")
@@ -64,8 +63,8 @@ func (adminUser) GetByUsername(username string) (*models.AdminUser, error) {
 	return models.AdminUserDefault.GetByUsername(username)
 }
 
-func (a adminUser) GetById(id int) (*models.AdminUser, error) {
-	return models.AdminUserDefault.GetById(id)
+func (a adminUser) GetByID(id int) (*models.AdminUser, error) {
+	return models.AdminUserDefault.GetByID(id)
 }
 
 func (a adminUser) GetToken(id int) (string, error) {
@@ -84,8 +83,8 @@ func (a adminUser) GetGroup() ([]*models.AdminGroup, error) {
 	return models.AdminGroupDefault.GetList()
 }
 
-func (a adminUser) GetGroupById(id int) (*models.AdminGroup, error) {
-	return models.AdminGroupDefault.GetById(id)
+func (a adminUser) GetGroupByID(id int) (*models.AdminGroup, error) {
+	return models.AdminGroupDefault.GetByID(id)
 }
 
 func (a adminUser) SaveGroup(group *models.AdminGroup) error {
@@ -99,12 +98,12 @@ func (a adminUser) SaveGroup(group *models.AdminGroup) error {
 }
 
 func (a adminUser) DelGroup(id int) error {
-	if list, err := models.AdminUserDefault.GetByGroupId(id); err != nil {
+	if list, err := models.AdminUserDefault.GetByGroupID(id); err != nil {
 		return err
 	} else if len(list) > 0 {
 		return errors.New("分组下存在用户不能删除")
 	}
-	if err := models.AdminGroupDefault.DelById(id); err != nil {
+	if err := models.AdminGroupDefault.DelByID(id); err != nil {
 		return err
 	}
 	return nil

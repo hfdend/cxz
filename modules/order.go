@@ -375,7 +375,7 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 }
 
 // 订单发货
-func (order) Delivery(orderID string, item int, express, waybillNumber string) error {
+func (order) Delivery(orderID string, item int, express, waybillNumber string, adminUserID int) error {
 	db := cli.DB.Begin()
 	order, err := models.OrderDefault.GetByOrderIDForUpdate(db, orderID)
 	if err != nil {
@@ -415,7 +415,7 @@ func (order) Delivery(orderID string, item int, express, waybillNumber string) e
 		db.Rollback()
 		return errors.New("计划已经申请取消不能发货")
 	}
-	if err := plan.Delivery(db, express, waybillNumber); err != nil {
+	if err := plan.Delivery(db, express, waybillNumber, adminUserID); err != nil {
 		db.Rollback()
 		return err
 	}
@@ -516,4 +516,22 @@ func (order) CancelOrder(adminUserID int, orderID string, planItems []int, refun
 	}
 	db.Commit()
 	return nil
+}
+
+func (order) UpdateAddress(optUserID, id int, address, name, phone, districtName, orderID string) error {
+	od, err := models.OrderAddressDefault.GetByID(id)
+	if err != nil {
+		return err
+	} else if od == nil {
+		return errors.New("数据未找到")
+	}
+	orderAddress := new(models.OrderAddress)
+	orderAddress.OrderID = od.OrderID
+	orderAddress.UserID = od.UserID
+	orderAddress.Name = name
+	orderAddress.Phone = phone
+	orderAddress.DistrictName = districtName
+	orderAddress.DetailAddress = address
+	orderAddress.OptUserID = optUserID
+	return orderAddress.Insert(cli.DB)
 }

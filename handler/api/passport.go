@@ -3,11 +3,11 @@ package api
 import (
 	"net/http"
 
-	"gitee.com/cardctl/server/role"
 	"github.com/gin-gonic/gin"
 	"github.com/hfdend/cxz/errors"
 	"github.com/hfdend/cxz/models"
 	"github.com/hfdend/cxz/modules"
+	"github.com/hfdend/cxz/role"
 	"github.com/hfdend/cxz/utils"
 )
 

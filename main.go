@@ -24,6 +24,7 @@ import (
 	"github.com/hfdend/cxz/handler"
 	"github.com/hfdend/cxz/handler/api"
 	"github.com/hfdend/cxz/handler/v1"
+	"github.com/hfdend/cxz/role"
 )
 
 func main() {
@@ -74,6 +75,16 @@ func route(engine *gin.Engine) {
 			g.POST("file/upload", MustLogin(), api.File.Upload)
 		}
 		{
+			g.GET("admin_user/group", MustLogin([]string{role.AdminUserGroup}), api.AdminUser.GetGroupList)
+			g.GET("admin_user/group/info", MustLogin([]string{role.AdminUserGroupInfo}), api.AdminUser.GetGroupByID)
+			g.POST("admin_user/group/save", MustLogin([]string{role.AdminUserGroupEdit}), api.AdminUser.GroupSave)
+			g.POST("admin_user/group/del", MustLogin([]string{role.AdminUserGroupDel}), api.AdminUser.GroupDel)
+			g.GET("admin_user/users", MustLogin([]string{role.AdminUser}), api.AdminUser.GetUserList)
+			g.GET("admin_user/user/info", MustLogin([]string{role.AdminUserEdit}), api.AdminUser.GetUser)
+			g.POST("admin_user/user/save", MustLogin([]string{role.AdminUserEdit}), api.AdminUser.SaveUser)
+			g.POST("admin_user/user/del", MustLogin([]string{role.AdminUserDel}), api.AdminUser.DelUser)
+			g.GET("admin_user/role/list", MustLogin([]string{role.AdminUserRole}), api.AdminUser.RoleList)
+
 			g.POST("passport/update/password", MustLogin(), api.Passport.UpdatePassword)
 			g.POST("passport/login", api.Passport.Login)
 			g.POST("passport/login/out", MustLogin(), api.Passport.LoginOut)
@@ -97,6 +108,8 @@ func route(engine *gin.Engine) {
 			g.POST("order/delivery", MustLogin(), api.Order.Delivery)
 			g.GET("order/plan/list", MustLogin(), api.Order.GetNeedSendList)
 			g.POST("order/cancel", MustLogin(), api.Order.CancelOrder)
+			g.POST("order/update/address", MustLogin(), api.Order.UpdateAddress)
+			g.GET("order/query/express", MustLogin(), api.Order.QueryExpress)
 		}
 		{
 			g.GET("banner/detail", MustLogin(), api.Banner.GetByID)

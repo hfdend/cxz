@@ -17,6 +17,7 @@ type OrderAddress struct {
 	DistrictCode  string `json:"district_code"`
 	DistrictName  string `json:"district_name"`
 	DetailAddress string `json:"detail_address"`
+	OptUserID     int    `json:"opt_user_id"`
 	Created       int64  `json:"created"`
 }
 
@@ -33,7 +34,18 @@ func (addr *OrderAddress) Insert(db *gorm.DB) error {
 
 func (OrderAddress) GetByOrderID(orderID string) (*OrderAddress, error) {
 	var data OrderAddress
-	if err := cli.DB.Where("order_id = ?", orderID).Find(&data).Error; err != nil {
+	if err := cli.DB.Where("order_id = ?", orderID).Last(&data).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (OrderAddress) GetByID(id int) (*OrderAddress, error) {
+	var data OrderAddress
+	if err := cli.DB.Where("id = ?", id).Find(&data).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return nil, nil
 		}

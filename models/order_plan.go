@@ -61,6 +61,8 @@ type OrderPlan struct {
 	Express string `json:"express"`
 	// 快递单号
 	WaybillNumber string `json:"waybill_number"`
+	// 发货的后台人员ID
+	AdminUserID int `json:"admin_user_id"`
 	// 第一个商品的图片
 	Image string `json:"image"`
 	// 取消申请时间
@@ -204,13 +206,14 @@ func (OrderPlan) GetByUserID(userID int) (list []*OrderPlan, err error) {
 	return
 }
 
-func (op *OrderPlan) Delivery(db *gorm.DB, express, waybillNumber string) error {
+func (op *OrderPlan) Delivery(db *gorm.DB, express, waybillNumber string, adminUserID int) error {
 	data := map[string]interface{}{
 		"express":        express,
 		"waybill_number": waybillNumber,
 		"delivery_time":  time.Now().Unix(),
 		"updated":        time.Now().Unix(),
 		"status":         PlanStatusDeliveried,
+		"admin_user_id":  adminUserID,
 	}
 	return db.Model(op).Update(data).Error
 }

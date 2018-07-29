@@ -12,7 +12,7 @@ func (AdminGroup) TableName() string {
 	return "admin_group"
 }
 
-func (g AdminGroup) GetById(id int) (*AdminGroup, error) {
+func (g AdminGroup) GetByID(id int) (*AdminGroup, error) {
 	var res AdminGroup
 	if db := g.DB().Table(g.TableName()).Where("id = ?", id).Scan(&res); db.RecordNotFound() {
 		return nil, nil
@@ -35,6 +35,6 @@ func (g *AdminGroup) Save() error {
 	return g.DB().Save(g).Error
 }
 
-func (g AdminGroup) DelById(id int) error {
+func (g AdminGroup) DelByID(id int) error {
 	return g.DB().Delete(g, "id = ?", id).Error
 }

@@ -3,7 +3,7 @@ package models
 type AdminActionLog struct {
 	Model
 	Id      int    `gorm:"primary_key" json:"id"`
-	AdminId int    `json:"admin_id"`
+	AdminID int    `json:"admin_id"`
 	Path    string `json:"path"`
 	Remark  string `json:"remark"`
 	Body    string `json:"body"`

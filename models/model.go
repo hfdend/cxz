@@ -14,6 +14,11 @@ import (
 
 type Sure int
 
+var (
+	ErrRecordNotFound = gorm.ErrRecordNotFound
+	RedisNil          = redis.Nil
+)
+
 const (
 	SureNil Sure = 0
 	SureYes Sure = 1

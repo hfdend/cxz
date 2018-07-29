@@ -46,11 +46,12 @@ func (order) Delivery(c *gin.Context) {
 		Item          int    `json:"item"`
 		Express       string `json:"express"`
 		WaybillNumber string `json:"waybill_number"`
+		AdminUserID   int    `json:"admin_user_id"`
 	}
 	if c.Bind(&args) != nil {
 		return
 	}
-	if err := modules.Order.Delivery(args.OrderID, args.Item, args.Express, args.WaybillNumber); err != nil {
+	if err := modules.Order.Delivery(args.OrderID, args.Item, args.Express, args.WaybillNumber, args.AdminUserID); err != nil {
 		JSON(c, err)
 	} else {
 		JSON(c, "success")
@@ -88,4 +89,64 @@ func (order) CancelOrder(c *gin.Context) {
 	} else {
 		JSON(c, "success")
 	}
+}
+
+func (order) UpdateAddress(c *gin.Context) {
+	var args struct {
+		ID            int    `json:"id"`
+		DetailAddress string `json:"detail_address"`
+		DistrictName  string `json:"district_name"`
+		Name          string `json:"name"`
+		OrderId       string `json:"order_id"`
+		Phone         string `json:"phone"`
+	}
+	if c.Bind(&args) != nil {
+		return
+	}
+	user := getUser(c)
+	if err := modules.Order.UpdateAddress(user.ID, args.ID, args.DetailAddress, args.Name, args.Phone, args.DistrictName, args.OrderId); err != nil {
+		JSON(c, err)
+	} else {
+		JSON(c, nil)
+	}
+}
+
+// swagger:parameters Order_QueryExpress
+type OrderQueryExpressArgs struct {
+	// 订单ID
+	OrderID string `json:"order_id" form:"order_id"`
+	// 物流单号
+	Number string `json:"number" form:"number"`
+	// 快递公司
+	Company string `json:"company" form:"company"`
+}
+
+type OrderQueryExpressResp struct {
+	ExpressData models.ExpressData   `json:"express_data"`
+	Address     *models.OrderAddress `json:"address"`
+}
+
+func (order) QueryExpress(c *gin.Context) {
+	var args struct {
+		// 订单ID
+		OrderID string `json:"order_id" form:"order_id"`
+		// 物流单号
+		Number string `json:"number" form:"number"`
+		// 快递公司
+		Company string `json:"company" form:"company"`
+	}
+	var resp OrderQueryExpressResp
+	var err error
+	if c.Bind(&args) != nil {
+		return
+	}
+	if resp.ExpressData, err = modules.Express.Query(args.Number, args.Company); err != nil {
+		JSON(c, err)
+		return
+	}
+	if resp.Address, err = models.OrderAddressDefault.GetByOrderID(args.OrderID); err != nil {
+		JSON(c, err)
+		return
+	}
+	JSON(c, resp)
 }
