@@ -83,6 +83,8 @@ func (order) GetFreight(phasePrice float64, weekNumber, addressID int, isPlan bo
 	address, err := models.AddressDefault.GetByID(addressID)
 	if err != nil {
 		return 0, err
+	} else if address == nil {
+		return 0, errors.New("地址不存在")
 	}
 	var code string
 	if len(address.DistrictCode) > 2 {
