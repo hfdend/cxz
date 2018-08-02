@@ -10,6 +10,7 @@ type AttributeItem struct {
 	Model
 	AttributeID int    `json:"attribute_id"`
 	Sort        int    `json:"sort"`
+	Key         string `json:"key"`
 	Name        string `json:"name"`
 	Created     int64  `json:"created"`
 }
@@ -37,6 +38,15 @@ func (AttributeItem) GetByAttributeID(id int) (list []*AttributeItem, err error)
 }
 
 func (AttributeItem) GetAll() (list []*AttributeItem, err error) {
-	err = cli.DB.Find(&list).Error
+	err = cli.DB.Order("`key` asc, `sort` desc").Find(&list).Error
+	return
+}
+
+func (AttributeItem) GetByKey(key string) (list []*AttributeItem, err error) {
+	db := cli.DB
+	if key != "" {
+		db = db.Where("`key` = ?", key)
+	}
+	err = db.Order("`key` asc, `sort` desc").Find(&list).Error
 	return
 }

@@ -75,6 +75,11 @@ func (product) GetByID(c *gin.Context) {
 	}
 }
 
+// swagger:parameters Product_AttributeItems
+type ProductAttributeItemsArgs struct {
+	Key string `json:"key" form:"key"`
+}
+
 // 商品分类和属性
 // swagger:response ProductAttributeItemsResp
 type ProductAttributeItemsResp struct {
@@ -86,7 +91,11 @@ type ProductAttributeItemsResp struct {
 // responses:
 //     200: ProductAttributeItemsResp
 func (product) AttributeItems(c *gin.Context) {
-	list, err := models.AttributeItemDefault.GetAll()
+	var args ProductAttributeItemsArgs
+	if c.Bind(&args) != nil {
+		return
+	}
+	list, err := models.AttributeItemDefault.GetByKey(args.Key)
 	if err != nil {
 		JSON(c, err)
 	} else {
