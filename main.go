@@ -122,5 +122,8 @@ func route(engine *gin.Engine) {
 			g.GET("freight/list", MustLogin(), api.Freight.GetList)
 			g.POST("freight/save", MustLogin(), api.Freight.SaveAll)
 		}
+		{
+			g.GET("statistics/statistics", MustLogin(), api.Statistics.Statistics)
+		}
 	}
 }
