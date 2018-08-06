@@ -82,8 +82,3 @@ func (op *OrderProduct) SetImageSrc() {
 	op.ImageSrc = fmt.Sprintf("%s/%s", strings.TrimRight(c.Domain, "/"), strings.TrimLeft(op.Image, "/"))
 	return
 }
-
-func (p OrderProduct) GetByOrderID(orderID string) (list []*Product, err error) {
-	err = p.DB().Where("order_id = ?", orderID).Find(&list).Error
-	return
-}
