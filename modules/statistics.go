@@ -11,11 +11,6 @@ type statistics int
 
 var Statistics statistics
 
-type StatisticsCondition struct {
-	StartTime int64 `json:"start_time" form:"start_time"`
-	EndTime   int64 `json:"end_time" form:"start_time"`
-}
-
 type StatisticsData struct {
 	TotalVal  float64           `json:"total_val"`
 	TrueVal   float64           `json:"true_val"`
@@ -38,9 +33,9 @@ type StatisticsTaste struct {
 	Price  float64 `json:"price"`
 }
 
-func (statistics) Statistics(cond StatisticsCondition) (data StatisticsData, err error) {
+func (statistics) Statistics(startTime, endTime int64) (data StatisticsData, err error) {
 	var list []*models.Order
-	if list, err = models.OrderDefault.GetByTime(cond.StartTime, cond.EndTime); err != nil {
+	if list, err = models.OrderDefault.GetByTime(startTime, endTime); err != nil {
 		return
 	}
 	storeType := map[string]*StatisticsType{}
