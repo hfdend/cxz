@@ -20,7 +20,8 @@ type OrderProduct struct {
 
 	ProductID int `json:"product_id"`
 
-	Name string `json:"name"`
+	Name   string `json:"name"`
+	IsPlan Sure   `json:"is_plan"`
 	// 类型
 	Type string `json:"type"`
 	// 味道
@@ -79,5 +80,10 @@ func (op *OrderProduct) SetImageSrc() {
 	}
 	c := conf.Config.Aliyun.OSS
 	op.ImageSrc = fmt.Sprintf("%s/%s", strings.TrimRight(c.Domain, "/"), strings.TrimLeft(op.Image, "/"))
+	return
+}
+
+func (p OrderProduct) GetByOrderID(orderID string) (list []*Product, err error) {
+	err = p.DB().Where("order_id = ?", orderID).Find(&list).Error
 	return
 }

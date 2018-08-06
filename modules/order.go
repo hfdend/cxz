@@ -53,6 +53,7 @@ func (o order) GetOrderProducts(orderID string, info []OrderProductInfo, weekNum
 
 		orderProduct.Name = product.Name
 		orderProduct.Type = product.Type
+		orderProduct.IsPlan = product.IsPlan
 		orderProduct.Taste = product.Taste
 		orderProduct.Unit = product.Unit
 		orderProduct.Price = product.Price
