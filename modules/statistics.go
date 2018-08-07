@@ -12,11 +12,11 @@ type statistics int
 var Statistics statistics
 
 type StatisticsData struct {
-	TotalVal  float64           `json:"total_val"`
-	TrueVal   float64           `json:"true_val"`
+	TotalVol  float64           `json:"total_vol"`
+	TrueVol   float64           `json:"true_vol"`
 	Freight   float64           `json:"freight"`
 	PlanVol   float64           `json:"plan_vol"`
-	NoPlanVal float64           `json:"no_plan_val"`
+	NoPlanVol float64           `json:"no_plan_vol"`
 	List      []*StatisticsType `json:"list"`
 }
 
@@ -49,7 +49,7 @@ func (statistics) Statistics(startTime, endTime int64) (data StatisticsData, err
 			if p.IsPlan == models.SureYes {
 				data.PlanVol += p.Price
 			} else {
-				data.NoPlanVal += p.Price
+				data.NoPlanVol += p.Price
 			}
 			if _, ok := storeType[p.Type]; !ok {
 				t := new(StatisticsType)
@@ -69,9 +69,9 @@ func (statistics) Statistics(startTime, endTime int64) (data StatisticsData, err
 			storeTaste[ttKey].Number += p.Number
 			storeTaste[ttKey].Price += utils.Round(p.Price*float64(p.Number), 2)
 		}
-		data.TotalVal = v.Price
+		data.TotalVol = v.Price
 		data.Freight = v.Freight
-		data.TrueVal = v.Price - v.RefundAmount
+		data.TrueVol = v.Price - v.RefundAmount
 	}
 	return
 }
