@@ -290,6 +290,9 @@ func (order) WXAPay(orderID string, user *models.User, ip string) (wxaRequest *w
 	api := wxpay.NewApi(c)
 	api.Logger = logrus.New()
 	query := wxpay.NewPayUnifiedOrder()
+	if order.Body == "" {
+		order.Body = "馋小主商品"
+	}
 	query.SetBody(order.Body)
 	query.SetOutTradeNo(order.OrderID)
 	if conf.Config.WXPay.TestAmount > 0 {
