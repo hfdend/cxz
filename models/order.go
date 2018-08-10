@@ -144,26 +144,26 @@ func (Order) GetByOrderIDAndUserID(orderID string, userID int) (*Order, error) {
 func (Order) GetList(cond OrderCondition, pager *Pager) (list []*Order, err error) {
 	db := cli.DB.Model(Order{})
 	if cond.OrderID != "" {
-		db = db.Where("order.order_id = ?", cond.OrderID)
+		db = db.Where("`order`.order_id = ?", cond.OrderID)
 	}
 	if cond.UserID != 0 {
-		db = db.Where("order.user_id = ?", cond.UserID)
+		db = db.Where("`order`.user_id = ?", cond.UserID)
 	}
 	if cond.StartTime != 0 {
-		db = db.Where("order.created >= ?", cond.StartTime)
+		db = db.Where("`order`.created >= ?", cond.StartTime)
 	}
 	if cond.EndTime != 0 {
-		db = db.Where("order.created < ?", cond.EndTime)
+		db = db.Where("`order`.created < ?", cond.EndTime)
 	}
 	if cond.Status != 0 {
-		db = db.Where("order.status = ?", cond.Status)
+		db = db.Where("`order`.status = ?", cond.Status)
 	}
 	if cond.DeliveryStatus != 0 {
 		db = db.Where("delivery_status = ?", cond.DeliveryStatus)
 	}
-	db = db.Where("order.exp_time > ? or order.exp_time = 0", time.Now().Unix())
+	db = db.Where("`order`.exp_time > ? or order.exp_time = 0", time.Now().Unix())
 	if cond.Type != "" || cond.Taste != "" {
-		db = db.Select("order.*").Joins("inner join order_product as op on op.order_id = order.order_id")
+		db = db.Select("`order`.*").Joins("inner join order_product as op on op.order_id = order.order_id")
 		if cond.Type != "" {
 			db = db.Where("op.type = ?", cond.Type)
 		}
