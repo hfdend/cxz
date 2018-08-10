@@ -87,6 +87,8 @@ type OrderCondition struct {
 	StartTime      int64          `json:"start_time" form:"start_time"`
 	EndTime        int64          `json:"end_time" form:"end_time"`
 	Status         OrderStatus    `json:"status" form:"status"`
+	Type           string         `json:"type" form:"type"`
+	Taste          string         `json:"taste" form:"taste"`
 	DeliveryStatus DeliveryStatus `json:"delivery_status" form:"delivery_status"`
 }
 
