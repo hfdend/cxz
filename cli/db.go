@@ -27,8 +27,8 @@ func InitMysql() {
 		Addr:                 fmt.Sprintf("%s:%d", mysqlConfig.Host, mysqlConfig.Port),
 		Net:                  "tcp",
 		Params: map[string]string{
-			//"charset": "utf8",
-			"loc": "Local",
+			"charset": "utf8",
+			"loc":     "Local",
 		},
 		DBName:  mysqlConfig.DB,
 		Timeout: mysqlConfig.Timeout,
@@ -40,6 +40,8 @@ func InitMysql() {
 	DB.DB().SetConnMaxLifetime(time.Duration(mysqlConfig.ConnMaxLifetime) * time.Second)
 	DB.DB().SetMaxIdleConns(mysqlConfig.MaxIdleConns)
 	DB.DB().SetMaxOpenConns(mysqlConfig.MaxOpenConns)
+	// 设置logger
+	DB.LogMode(true)
 	network := conf.Config.Logger.Network
 	addr := conf.Config.Logger.Addr
 	priority := utils.ParseSyslogPriority(conf.Config.Logger.Priority)
