@@ -52,7 +52,7 @@ func (p passport) SendRegisterCode(phone string) (code string, err error) {
 		code = "1234"
 	} else {
 		code = fmt.Sprintf("%0.4d", utils.RandInterval(0, 10000))
-		if err := SMS.Send(phone, code); err != nil {
+		if err = SMS.Send(phone, code); err != nil {
 			return
 		}
 	}
