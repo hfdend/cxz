@@ -9,7 +9,7 @@ import (
 
 func TestPassport_SendRegisterCode(t *testing.T) {
 	cli.Init()
-	code, err := Passport.SendRegisterCode("18111634003")
+	code, err := Passport.SendRegisterCode("15198200257")
 	fmt.Println(err)
 	fmt.Println(code)
 }

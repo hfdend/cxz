@@ -56,7 +56,6 @@ func (p passport) SendRegisterCode(phone string) (code string, err error) {
 			return
 		}
 	}
-
 	if err = p.SaveVerificationCode(phone, code, KEY_Register, 10*time.Minute); err != nil {
 		return
 	}
