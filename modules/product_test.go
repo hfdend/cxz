@@ -17,10 +17,10 @@ func TestProduct_GetList(t *testing.T) {
 	cond := models.ProductCondition{}
 	cond.Type = "狗狗湿粮"
 	cond.Taste = "三文鱼美毛"
-	cond.MinWeight = 0
-	cond.MaxWeight = 2
-	cond.MinAge = 10
-	cond.MaxAge = 9999
+	cond.MinWeight = 5
+	cond.MaxWeight = 10
+	cond.MinAge = 0
+	cond.MaxAge = 10
 	list, err := Product.GetList(cond, nil)
 	fmt.Println(err)
 	utils.JSON(list)
