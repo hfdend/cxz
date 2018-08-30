@@ -47,9 +47,16 @@ func (p passport) SendRegisterCode(phone string) (code string, err error) {
 		err = errors.New("此号码以及被注册")
 		return
 	}
-	code = fmt.Sprintf("%0.4d", utils.RandInterval(0, 10000))
-	// TODO 执行发送验证码
 	code = "1234"
+	if conf.Config.Aliyun.SMS.Test {
+		code = "1234"
+	} else {
+		code = fmt.Sprintf("%0.4d", utils.RandInterval(0, 10000))
+		if err := SMS.Send(phone, code); err != nil {
+			return
+		}
+	}
+
 	if err = p.SaveVerificationCode(phone, code, KEY_Register, 10*time.Minute); err != nil {
 		return
 	}

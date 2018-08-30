@@ -52,6 +52,7 @@ var Config struct {
 			Bucket          string `yaml:"bucket"`
 		} `yaml:"oss"`
 		SMS struct {
+			Test            bool   `yaml:"test"`
 			AccessKeyID     string `yaml:"access_key_id"`
 			AccessKeySecret string `yaml:"access_key_secret"`
 		} `yaml:"sms"`
