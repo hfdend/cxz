@@ -112,13 +112,13 @@ func (Product) GetList(cond ProductCondition, pager *Pager) (list []*Product, er
 		db = db.Where("is_plan = ?", cond.IsPlan)
 	}
 	if cond.MinWeight != 0 {
-		db = db.Where("max_weight >= ?", cond.MinWeight)
+		db = db.Where("max_weight > ?", cond.MinWeight)
 	}
 	if cond.MaxWeight != 0 {
 		db = db.Where("min_weight <= ?", cond.MaxWeight)
 	}
 	if cond.MinAge != 0 {
-		db = db.Where("max_age >= ?", cond.MinAge)
+		db = db.Where("max_age > ?", cond.MinAge)
 	}
 	if cond.MaxAge != 0 {
 		db = db.Where("min_age <= ?", cond.MaxAge)
