@@ -72,7 +72,10 @@ type OrderPlan struct {
 	Created      int64 `json:"created"`
 	Updated      int64 `json:"updated"`
 
-	ImageSrc string `json:"image_src" gorm:"-"`
+	ImageSrc    string          `json:"image_src" gorm:"-"`
+	Order       *Order          `json:"order" gorm:"-"`
+	ProductList []*OrderProduct `json:"product_list" gorm:"-"`
+	Address     *OrderAddress   `json:"address" gorm:"-"`
 }
 
 var OrderPlanDefault OrderPlan
@@ -85,6 +88,53 @@ func (op *OrderPlan) Insert(db *gorm.DB) error {
 	op.Created = time.Now().Unix()
 	op.Updated = time.Now().Unix()
 	return db.Create(op).Error
+}
+
+func (op OrderPlan) SetInfo(list []*OrderPlan) error {
+	if len(list) == 0 {
+		return nil
+	}
+	orderIDStore := map[string]bool{}
+	var orderIds []string
+	for _, v := range list {
+		if _, ok := orderIDStore[v.OrderID]; !ok {
+			orderIDStore[v.OrderID] = true
+		}
+		orderIds = append(orderIds, v.OrderID)
+	}
+	if len(orderIds) == 0 {
+		return nil
+	}
+	productList, err := OrderProductDefault.GetByOrderIDs(orderIds)
+	if err != nil {
+		return err
+	}
+	productStore := map[string][]*OrderProduct{}
+	for _, v := range productList {
+		productStore[v.OrderID] = append(productStore[v.OrderID], v)
+	}
+	orders, err := OrderDefault.GetByOrderIds(orderIds)
+	if err != nil {
+		return err
+	}
+	orderStore := map[string]*Order{}
+	for _, v := range orders {
+		orderStore[v.OrderID] = v
+	}
+	addressList, err := OrderAddressDefault.GetByOrderIDs(orderIds)
+	if err != nil {
+		return err
+	}
+	addressStore := map[string]*OrderAddress{}
+	for _, v := range addressList {
+		addressStore[v.OrderID] = v
+	}
+	for _, v := range list {
+		v.Order, _ = orderStore[v.OrderID]
+		v.Address, _ = addressStore[v.OrderID]
+		v.ProductList, _ = productStore[v.OrderID]
+	}
+	return nil
 }
 
 // 按需要发货的期数获取期

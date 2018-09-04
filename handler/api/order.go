@@ -1,6 +1,9 @@
 package api
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/hfdend/cxz/models"
 	"github.com/hfdend/cxz/modules"
@@ -70,8 +73,21 @@ func (order) GetNeedSendList(c *gin.Context) {
 	if err != nil {
 		JSON(c, err)
 	} else {
-		JSON(c, list)
+		JSON(c, map[string]interface{}{"list": list, "pager": pager})
 	}
+}
+
+func (order) GetNeedSendListExport(c *gin.Context) {
+	data, err := modules.Order.GetNeedSendListExport()
+	if err != nil {
+		JSON(c, err)
+		return
+	}
+	filename := fmt.Sprintf("发货导出-%s.xlsx", time.Now().Format("20060102150405"))
+	h := c.Writer.Header()
+	h.Set("Content-Disposition", "attachment; charset=GBK; filename="+filename)
+	h.Set("Content-Type", "application/vnd.ms-excel")
+	c.Writer.Write(data)
 }
 
 func (order) CancelOrder(c *gin.Context) {

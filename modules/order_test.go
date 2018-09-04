@@ -2,6 +2,7 @@ package modules
 
 import (
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/hfdend/cxz/cli"
@@ -46,4 +47,13 @@ func TestOrder_GetOrderProducts(t *testing.T) {
 	fmt.Println(err)
 	fmt.Println(price)
 	fmt.Println(freight)
+}
+
+func TestOrder_GetNeedSendListExport(t *testing.T) {
+	cli.Init()
+	data, err := Order.GetNeedSendListExport()
+	fmt.Println(err)
+	fmt.Println(len(data))
+	f, _ := os.OpenFile("1.xlsx", os.O_CREATE|os.O_WRONLY, 0644)
+	f.Write(data)
 }

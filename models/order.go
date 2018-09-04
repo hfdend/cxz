@@ -115,6 +115,11 @@ func (*Order) GetByOrderID(orderID string) (*Order, error) {
 	return &data, nil
 }
 
+func (*Order) GetByOrderIds(orderIds []string) (list []*Order, err error) {
+	err = cli.DB.Where("order_id in (?)", orderIds).Find(&list).Error
+	return
+}
+
 func (*Order) GetByOrderIDForUpdate(db *gorm.DB, orderID string) (*Order, error) {
 	var data Order
 	if err := db.Set("gorm:query_option", "FOR UPDATE").Where("order_id = ?", orderID).Find(&data).Error; err != nil {

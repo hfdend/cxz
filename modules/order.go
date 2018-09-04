@@ -1,9 +1,12 @@
 package modules
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/tealeg/xlsx"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/hfdend/cxz/cli"
@@ -540,4 +543,59 @@ func (order) UpdateAddress(optUserID, id int, address, name, phone, districtName
 	orderAddress.DetailAddress = address
 	orderAddress.OptUserID = optUserID
 	return orderAddress.Insert(cli.DB)
+}
+
+func (order) GetNeedSendListExport() (data []byte, err error) {
+	var list []*models.OrderPlan
+	if list, err = models.OrderPlanDefault.GetNeedSendList(nil); err != nil {
+		return
+	}
+	if err = models.OrderPlanDefault.SetInfo(list); err != nil {
+		return
+	}
+	file := xlsx.NewFile()
+	var sheet *xlsx.Sheet
+	if sheet, err = file.AddSheet("Sheet1"); err != nil {
+		return
+	}
+	var row *xlsx.Row
+	{
+		row = sheet.AddRow()
+		row.SetHeightCM(1)
+		addCell(row, "订单ID")
+		addCell(row, "期号")
+		addCell(row, "用户ID")
+		addCell(row, "收货人")
+		addCell(row, "电话")
+		addCell(row, "地区")
+		addCell(row, "地址")
+		addCell(row, "付款金额")
+		addCell(row, "下单时间")
+		addCell(row, "计划发货时间")
+	}
+	for _, v := range list {
+		row = sheet.AddRow()
+		row.SetHeightCM(1)
+		addCell(row, v.OrderID)
+		addCell(row, fmt.Sprintf("%d", v.Item))
+		addCell(row, fmt.Sprintf("%d", v.UserID))
+		addCell(row, fmt.Sprintf("%s", v.Address.Name))
+		addCell(row, fmt.Sprintf("%s", v.Address.Phone))
+		addCell(row, fmt.Sprintf("%s", v.Address.DistrictName))
+		addCell(row, fmt.Sprintf("%s", v.Address.DetailAddress))
+		addCell(row, fmt.Sprintf("%.2f", v.Order.PaymentPrice))
+		addCell(row, time.Unix(v.Order.Created, 0).Format("2006-01-02 15:04:05"))
+		addCell(row, time.Unix(v.PlanTime, 0).Format("2006-01-02 15:04:05"))
+	}
+	buf := bytes.NewBuffer(nil)
+	if err = file.Write(buf); err != nil {
+		return
+	}
+	data = buf.Bytes()
+	return
+}
+
+func addCell(row *xlsx.Row, value string) {
+	cell := row.AddCell()
+	cell.Value = value
 }
