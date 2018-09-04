@@ -217,7 +217,7 @@ func (o Order) CancelOrder(db *gorm.DB, adminUserID int, orderID string, refundA
 }
 
 func (o Order) GetByTime(startTime, endTime int64) (list []*Order, err error) {
-	db := o.DB().Table(o.TableName())
+	db := o.DB().Table(o.TableName()).Where("status = ?", OrderStatusSuccess)
 	if startTime != 0 {
 		db = db.Where("created >= ?", startTime)
 	}
