@@ -562,30 +562,52 @@ func (order) GetNeedSendListExport() (data []byte, err error) {
 	{
 		row = sheet.AddRow()
 		row.SetHeightCM(1)
-		addCell(row, "订单ID")
-		addCell(row, "期号")
-		addCell(row, "用户ID")
-		addCell(row, "收货人")
-		addCell(row, "电话")
-		addCell(row, "地区")
-		addCell(row, "地址")
-		addCell(row, "付款金额")
-		addCell(row, "下单时间")
-		addCell(row, "计划发货时间")
+		addCell(row, "订单ID", 0, 0)
+		addCell(row, "期号", 0, 0)
+		addCell(row, "用户ID", 0, 0)
+		addCell(row, "收货人", 0, 0)
+		addCell(row, "电话", 0, 0)
+		addCell(row, "地区", 0, 0)
+		addCell(row, "地址", 0, 0)
+		addCell(row, "付款金额", 0, 0)
+		addCell(row, "下单时间", 0, 0)
+		addCell(row, "计划发货时间", 0, 0)
+		addCell(row, "商品ID", 0, 0)
+		addCell(row, "商品名", 0, 0)
+		addCell(row, "商品数量", 0, 0)
+		addCell(row, "商品价格", 0, 0)
+		addCell(row, "商品类型", 0, 0)
+		addCell(row, "商品口味", 0, 0)
 	}
 	for _, v := range list {
+		l := len(v.ProductList)
 		row = sheet.AddRow()
-		row.SetHeightCM(1)
-		addCell(row, v.OrderID)
-		addCell(row, fmt.Sprintf("%d", v.Item))
-		addCell(row, fmt.Sprintf("%d", v.UserID))
-		addCell(row, fmt.Sprintf("%s", v.Address.Name))
-		addCell(row, fmt.Sprintf("%s", v.Address.Phone))
-		addCell(row, fmt.Sprintf("%s", v.Address.DistrictName))
-		addCell(row, fmt.Sprintf("%s", v.Address.DetailAddress))
-		addCell(row, fmt.Sprintf("%.2f", v.Order.PaymentPrice))
-		addCell(row, time.Unix(v.Order.Created, 0).Format("2006-01-02 15:04:05"))
-		addCell(row, time.Unix(v.PlanTime, 0).Format("2006-01-02 15:04:05"))
+		row.SetHeightCM(float64(l))
+		addCell(row, v.OrderID, 0, l-1)
+		addCell(row, fmt.Sprintf("%d", v.Item), 0, l-1)
+		addCell(row, fmt.Sprintf("%d", v.UserID), 0, l-1)
+		addCell(row, fmt.Sprintf("%s", v.Address.Name), 0, l-1)
+		addCell(row, fmt.Sprintf("%s", v.Address.Phone), 0, l-1)
+		addCell(row, fmt.Sprintf("%s", v.Address.DistrictName), 0, l-1)
+		addCell(row, fmt.Sprintf("%s", v.Address.DetailAddress), 0, l-1)
+		addCell(row, fmt.Sprintf("%.2f", v.Order.PaymentPrice), 0, l-1)
+		addCell(row, time.Unix(v.Order.Created, 0).Format("2006-01-02 15:04:05"), 0, l-1)
+		addCell(row, time.Unix(v.PlanTime, 0).Format("2006-01-02 15:04:05"), 0, l-1)
+		for i, p := range v.ProductList {
+			if i != 0 {
+				row = sheet.AddRow()
+				row.SetHeightCM(1)
+				for i := 0; i < 10; i++ {
+					addCell(row, "", 0, 0)
+				}
+			}
+			addCell(row, fmt.Sprintf("%d", p.ProductID), 0, 0)
+			addCell(row, p.Name, 0, 0)
+			addCell(row, fmt.Sprintf("%d", p.Number), 0, 0)
+			addCell(row, fmt.Sprintf("%0.2f", p.Price), 0, 0)
+			addCell(row, p.Type, 0, 0)
+			addCell(row, p.Taste, 0, 0)
+		}
 	}
 	buf := bytes.NewBuffer(nil)
 	if err = file.Write(buf); err != nil {
@@ -595,7 +617,8 @@ func (order) GetNeedSendListExport() (data []byte, err error) {
 	return
 }
 
-func addCell(row *xlsx.Row, value string) {
+func addCell(row *xlsx.Row, value string, hcells, vcells int) {
 	cell := row.AddCell()
+	cell.Merge(hcells, vcells)
 	cell.Value = value
 }

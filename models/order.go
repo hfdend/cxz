@@ -231,5 +231,4 @@ func (o Order) GetByTime(startTime, endTime int64) (list []*Order, err error) {
 	}
 	err = db.Find(&list).Error
 	return
-
 }
