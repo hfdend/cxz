@@ -370,7 +370,7 @@ func (order) PaymentSuccess(orderID, transactionID string) error {
 		if i == 0 {
 			op.PlanTime = t.Add(24 * time.Hour).Unix()
 		} else {
-			op.PlanTime = t.Add(time.Duration(i+1*24*7+1) * time.Hour).Unix()
+			op.PlanTime = t.Add(time.Duration(i*24*7) * time.Hour).Unix()
 		}
 		op.Status = models.PlanStatusWaiting
 		op.ApplyStatus = models.ApplyStatusNil
